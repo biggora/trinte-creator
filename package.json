@@ -1,0 +1,47 @@
+{
+    "optionalDependencies": {},
+    "keywords": [
+        "ejs",
+        "trinte",
+        "trintejs",
+        "caminte"
+    ],
+    "engines": {
+        "node": ">=0.6"
+    },
+    "licenses": [],
+    "devDependencies": {
+        "nodeunit": ">=0.5.4"
+    },
+    "homepage": "http://www.trintejs.com/",
+    "version": "0.0.1",
+    "main": "./index.js",
+    "author": {
+        "name": "Aleksej Gordejev",
+        "email": "aleksej@gordejev.lv",
+        "url": "https://github.com/biggora/"
+    },
+    "scripts": {
+        "test": "nodeunit tests/test.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/biggora/trinte-ejs.git"
+    },
+    "directories": {
+        "lib": "lib",
+        "tests": "tests"
+    },
+    "dependencies": {
+        "trinte": "latest",
+        "trinte-themes": "latest",
+        "trinte-ejs": "latest",
+        "trinte-jade": "latest",
+        "trinte-haml": "latest",
+        "trinte-hogan": "latest",
+        "trinte-jshtml": "latest",
+        "ejs": ">=0.8.0"     
+    },
+    "description": "TrinteJS script creator",
+    "name": "trinte-creator"
+}
