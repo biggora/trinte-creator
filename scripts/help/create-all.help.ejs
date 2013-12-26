@@ -1,0 +1,46 @@
+
+ TrinteJS MVC Bootstrapper
+ This is the default usage help.
+
+ Usage: trinte [options]
+
+ Options:
+
+  -h, --help       output usage information
+  -V, --version    output the version number
+  -f, --force      force on non-empty directory
+  -i, --init       create new mvc project
+  
+  --sessions       add session support
+  --jade           add view engine support (ejs|jade|jshtml|haml|hogan) 
+                   defaults to ejs.
+  --auth           add authorization support (dependency to everyauth)
+  --coffee         add coffee script support (defaults to js)
+  --less           add stylesheet support (css|less|stylus|sass) 
+                   defaults to plain css.
+  --force          force on non-empty directory
+  
+ Create Application example:
+  
+   $ trinte init myapp --sessions --auth --jade --coffee
+
+    create : myapp
+    create : myapp/package.json
+    create : myapp/app.js
+    create : myapp/app-cluster.js
+    create : myapp/public
+    create : myapp/public/js
+    create : myapp/public/img
+    create : myapp/public/css
+    create : myapp/public/css/...
+    create : myapp/config
+    create : myapp/config/...
+    create : myapp/app
+    create : myapp/app/controllers
+   ...
+
+ Install dependencies:
+   $ cd myapp && npm install
+  
+ Run the app:
+   $ trinte  
