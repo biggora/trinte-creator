@@ -14,7 +14,7 @@
         "nodeunit": ">=0.5.4"
     },
     "homepage": "http://www.trintejs.com/",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "main": "./index.js",
     "author": {
         "name": "Aleksej Gordejev",

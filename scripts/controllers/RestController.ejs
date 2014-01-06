@@ -41,6 +41,7 @@ module.exports = {
         var format = req.params.format || '';
         var sort = req.query.sort || req.body.sort;
         var search = req.query.search || req.body.search;
+        var fields = req.query.fields || req.body.fields;
         var query = req.method === 'POST'? req.body : req.query;
         var from = req.params.from ? parseInt(req.params.from) - 1 : 0;
         var to = req.params.to ? parseInt(req.params.to) : 20;
@@ -68,8 +69,7 @@ module.exports = {
                     regex : search
             };
         }
-        <? }}) ?>
-        
+        <? }}) ?>        
         Tools.validateFields(new <?= modelName ?>(), query, {}, function(err, filtered) {
             for (var field in filtered) {
                 opts.where[field] = filtered[field];
@@ -82,18 +82,27 @@ module.exports = {
                     if (err) {
                         return next(err);
                     }
-                    switch (format.toString()) {
-                        case 'json':
-                            res.send(<?= basePathPlural ?>.map(function(u) {
+                    
+                    var out = {
+                        title: title,
+                        first_page: 1,
+                        curent_page: from/to + 1, 
+                        total_pages: Math.ceil(total/to) + 1,
+                        items_per_page: to, 
+                        items_total: total, 
+                        items_start: from, 
+                        items_end: from + to,
+                        data: <?= basePathPlural ?>.map(function(u) {
                                 return u.toObject();
-                            }));
+                            })
+                    }
+                    
+                    switch (format.toString()) {
+                        case 'xml':
+                            res.send('Not supported');
                             break;
                         default:
-                            res.render(ViewTemplatePath,{
-                                <?= basePathPlural ?> : <?= basePathPlural ?>,
-                                pagerHtml : pagerHtml,
-                                title : title
-                            });
+                            res.send(out);
                     }
                 });
             });
@@ -114,20 +123,18 @@ module.exports = {
             var format = req.params.format || '';
             <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
 
-            if(err) { return next(err); }
-
-            switch (format.toString()) {
-                case 'json':
-                    res.send(<?= modelVariable ?>.toObject());
-                    break;
-
-                default:
-                    res.render(ViewTemplatePath + "/show",{
-                        <?= modelVariable ?>:<?= modelVariable ?>,
-                        title:title
-                    });
-            }
-        });
+                    if(err) { return next(err); }
+                    
+                    <?= modelVariable ?> = <?= modelVariable ?> ? <?= modelVariable ?> : {};
+                    
+                    switch (format.toString()) {
+                        case 'xml':
+                            res.send('Not supported');
+                            break;
+                        default:
+                            res.send(<?= modelVariable ?>.toObject());
+                    }
+            });
     },
 
     /**
@@ -141,10 +148,13 @@ module.exports = {
     'new': function(req, res, next) {
         var title = "New <?= modelName ?>";
         var <?= modelVariable ?> = new <?= modelName ?>();
-        res.render(ViewTemplatePath + "/new",{
-              <?= modelVariable ?>:<?= modelVariable ?>,
-              title:title
-        });
+        switch (format.toString()) {
+               case 'xml':
+                    res.send('Not supported');
+                    break;
+               default:
+                    res.send(<?= modelVariable ?>.toObject());
+        }
     },
 
     /**
@@ -158,11 +168,24 @@ module.exports = {
     'edit': function(req, res, next) {
             var title = "Edit <?= modelName ?>";
             <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-            if(err) return next(err);
-            res.render(ViewTemplatePath + "/edit",{
-                 <?= modelVariable ?> : <?= modelVariable ?>,
-                 title : title
-            });
+                    if(err) { return next(err); }
+                    if(<?= modelVariable ?>) {
+                      switch (format.toString()) {
+                          case 'xml':
+                              res.send('Not supported');
+                              break;
+                          default:
+                              res.send(<?= modelVariable ?>.toObject());
+                      }
+                    } else {
+                      res.send({
+                          error : {
+                             status: 404,
+                             message: '<?= modelVariable ?>  Not Found.',
+                             code: 'not_found'
+                          }
+                      });
+                    }
         });
     },
 
@@ -177,24 +200,37 @@ module.exports = {
     'update': function(req, res, next) {
         var format = req.params.format || '';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-            <?= modelVariable ?>.updateAttributes(req.body.<?= modelVariable ?>, function(err) {
+            if(<?= modelVariable ?>) {
+             <?= modelVariable ?>.updateAttributes(req.body.<?= modelVariable ?>, function(err) {
 
                 if (err) {
                     console.log(err);
-                    req.flash('error','Could not update <?= modelVariable ?>: ' + err);
-                    res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                    res.send({
+                        error : {
+                         status: 404,
+                         message: 'Could not update <?= modelVariable ?>: ' + err,
+                         code: 'not_updated'
+                    }});
                     return;
                 }
-
+                    
                 switch (format.toString()) {
-                    case 'json':
-                        res.send(<?= modelVariable ?>.toObject());
-                        break;
-                    default:
-                        req.flash('info', '<?= modelName ?> updated');
-                        res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                      case 'xml':
+                          res.send('Not supported');
+                          break;
+                      default:
+                          res.send(<?= modelVariable ?>.toObject());
                 }
-            });
+             });
+            } else {
+                res.send({
+                         error : {
+                             status: 404,
+                             message: '<?= modelVariable ?>  Not Found.',
+                             code: 'not_found'
+                        }
+                });
+            }
         });
     },
 
@@ -210,22 +246,24 @@ module.exports = {
         var format = req.params.format || '';
         var <?= modelVariable ?> = new <?= modelName ?>(req.body.<?= modelVariable ?>);
 
-        <?= modelVariable ?>.save(function(err) {
+            <?= modelVariable ?>.save(function(err) {
 
-            if (err) {
-                req.flash('error','Could not create <?= modelVariable ?>: ' + err);
-                res.redirect(pathTo.<?= nsPath ?><?= basePathPlural ?>());
-                return;
-            }
-
-            switch (format.toString()) {
-                case 'json':
-                    res.send(<?= modelVariable ?>.toObject());
-                    break;
-                default:
-                    req.flash('info','<?= modelName ?> created');
-                    res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
-            }
+               if (err) {
+                    res.send({
+                        error : {
+                         status: 404,
+                         message: 'Could not create <?= modelVariable ?>: ' + err,
+                         code: 'not_created'
+                    }});
+                    return;
+               }
+                switch (format.toString()) {
+                      case 'xml':
+                          res.send('Not supported');
+                          break;
+                      default:
+                          res.send(<?= modelVariable ?>.toObject());
+                }
         });
     },
 
@@ -242,18 +280,30 @@ module.exports = {
             <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
 
             if (!<?= modelVariable ?>) {
-                req.flash('error','Unable to locate the <?= modelVariable ?> to delete!');
-                res.send('false');
+                    res.send({
+                         error : {
+                             status: 404,
+                             message: 'Unable to locate the <?= modelVariable ?> to delete!',
+                             code: 'not_found'
+                        }
+                    });
                 return false;
             };
 
-                <?= modelVariable ?>.destroy(function(err) {
+            <?= modelVariable ?>.destroy(function(err) {
                 if(err) {
-                    req.flash('error','There was an error deleting the <?= modelVariable ?>!');
-                    res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
+                    res.send({
+                         error : {
+                             status: 404,
+                             message: 'There was an error deleting the <?= modelVariable ?>!',
+                             code: 'not_deleting'
+                        }
+                    });
                 } else {
-                    req.flash('info','<?= modelName ?> deleted');
-                    res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
+                    res.send({
+                           status: 200,
+                           message: '<?= modelVariable ?> deleted!'
+                    });
                 }
             });
         });
@@ -269,13 +319,20 @@ module.exports = {
      **/
     'destroyall': function(req, res, next){
         <?= modelName ?>.destroyAll(function(err) {
-            if(err) {
-                req.flash('error','There was an error deleting the <?= basePathPlural ?>!');
-                res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
-            } else {
-                req.flash('info','<?= controllerName ?> deleted');
-                res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
-            }
+                if(err) {
+                    res.send({
+                         error : {
+                             status: 404,
+                             message: 'There was an error deleting the <?= modelVariable ?>!',
+                             code: 'not_deleting'
+                        }
+                    });
+                } else {
+                    res.send({
+                           status: 200,
+                           message: '<?= controllerName ?> deleted!'
+                    });
+                }
         });
     }
 };
