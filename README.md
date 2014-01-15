@@ -10,7 +10,7 @@ Script creator for TrinteJS Javascript MVC Framework.
 
     (The MIT License)
 
-    Copyright (c) 2013 Alexey Gordeyev
+    Copyright (c) 2013-2014 Alexey Gordeyev
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal

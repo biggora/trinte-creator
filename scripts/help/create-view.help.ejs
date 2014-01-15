@@ -1,8 +1,16 @@
 
-TrinteJS MVC Bootstrapper
-This is the help file for 'create-view' command.
+  Trinte Creator v<?- version ?> This is the help for generate view.
+  =================================================================
+ 
+  Usage: trinte -g view <[namespace]modelName> [option(s)]
 
-Command format:
-trinte script create-view [MODELNAME]
+  Options:  
 
-[MODELNAME]  The name (case sensitive) for the model you want to create views for.
+    [namespace]     Generate scafold with namspace
+    [modelName]     The name (case sensitive) for the view you want to create.
+    force           force on exists controller   
+  
+  Examples:
+  
+    # create view Login
+    $ trinte -g view Login

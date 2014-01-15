@@ -1,19 +1,24 @@
 
-TrinteJS MVC Bootstrapper
-This is the help file for 'create-model' command.
+  Trinte Creator v<?- version ?> This is the help for generate model.
+  ==================================================================
+ 
+  Usage: trinte -g model <modelName> [option(s)] [field(s)]
 
-Command format:
-trinte script create-model [MODELNAME] *[FIELDS]
-
-[MODELNAME]   - The name (case sensitive) for the model you want to create.
-[FIELDS]      - Fields list (FIELDNAME:*FIELDTYPE).
-
-Following are all valid field types.
-- String
-- Number
-- Date
-- Buffer
-- Boolean
-- Mixed
-- ObjectId
-- Array
+  Options:  
+  
+    [modelName]     The name (case sensitive) for the model you want to create.
+    force           force on exists model
+    [field]         Space separated fields list (fieldName:*fieldType).
+                    Following are all valid field types:
+                    String, Number, Date, Text, Boolean, Int     
+  
+  Examples:
+  
+    # create model Post without fields
+    $ trinte -g model Post
+    
+    # create model Post with fields
+    $ trinte -g model Post active:bool name:string desc:text created:date
+    
+    # override exiting model Post with fields
+    $ trinte -g model Post force active:bool name:string desc:text created:date
