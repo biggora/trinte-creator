@@ -6,34 +6,32 @@
  
  Commands:
 
-    -h, --help [name]           output usage information
-    -V, --version               output the version number
-    -i, --init <name> [opts]    create new mvc project with <name>
-    -f, --force                 force on non-empty directory
-    -s, --server [port]         run the application as a server.
-    -c, --cluster [port]        run the application using the cluster module.
-    -g, --generate <generator>  run a generator
+    -h, --help [name]            output usage information
+    -V, --version                output the version number
+    -i, --init <name> [opts]     create new mvc project with <name>
+    -f, --force                  force on non-empty directory
+    -s, --server [port]          run the application as a server.
+    -c, --cluster [port]         run the application using the cluster module.
+    -g, --generate <generator>   run a generator
     
  Options:     
  
     --sess                       session store
     --auth                       authorization support
     --theme <name>               theme (default|black|blue|green|orange|pink|violet) 
-    --jade                       view engine support (ejs|jade) 
-                                defaults to ejs 
     --db                         database [driver]:[database]:[port]:[username]:[password]
-                                drivers - redis|mongodb|mysql|sqlite3|postgres
-                                defaults to memory
+                                 drivers - redis|mongodb|mysql|sqlite3|postgres
+                                 defaults to memory
             
  Generators:
 
-    controller <name>  [args]   Creates a controller
-    model      <name>  [args]   Creates a model
-    view       <name>  [args]   Creates a view
-    crud       <name>  [args]   Creates a scaffold
-    rest       <name>  [args]   Creates a rest
-    test       <name>  [args]   Creates a test
-    help       [name]           Show help 
+    controller <name>  [args]    Creates a controller
+    model      <name>  [args]    Creates a model
+    view       <name>  [args]    Creates a view
+    crud       <name>  [args]    Creates a scaffold
+    rest       <name>  [args]    Creates a rest
+    test       <name>  [args]    Creates a test
+    help       [name]            Show help 
 
   Examples:
   
