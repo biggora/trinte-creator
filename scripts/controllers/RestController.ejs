@@ -91,18 +91,21 @@ module.exports = {
                         items_per_page: to, 
                         items_total: total, 
                         items_start: from, 
-                        items_end: from + to,
-                        data: <?= basePathPlural ?>.map(function(u) {
-                                return u.toObject();
-                            })
+                        items_end: from + to
                     }
                     
                     switch (format.toString()) {
                         case 'xml':
-                            res.send('Not supported');
+                            out.items = <?= basePathPlural ?>.map(function(u) {
+                                return { item : u.toObject() };
+                            });
+                            res.xml({ root : out });
                             break;
                         default:
-                            res.send(out);
+                            out.items = <?= basePathPlural ?>.map(function(u) {
+                                return u.toObject();
+                            });
+                            res.json(out);
                     }
                 });
             });
@@ -122,17 +125,19 @@ module.exports = {
             var title = "Show <?= modelName ?>";
             var format = req.params.format || '';
             <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-
-                    if(err) { return next(err); }
-                    
-                    <?= modelVariable ?> = <?= modelVariable ?> ? <?= modelVariable ?> : {};
-                    
-                    switch (format.toString()) {
-                        case 'xml':
-                            res.send('Not supported');
-                            break;
-                        default:
-                            res.send(<?= modelVariable ?>.toObject());
+                    if(err) { 
+                        return next(err); 
+                    }
+                    if(<?= modelVariable ?>) {                    
+                       switch (format.toString()) {
+                           case 'xml':
+                               res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
+                               break;
+                           default:
+                               res.send(<?= modelVariable ?>.toObject());
+                       }
+                    } else {
+                        res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
                     }
             });
     },
@@ -150,7 +155,7 @@ module.exports = {
         var <?= modelVariable ?> = new <?= modelName ?>();
         switch (format.toString()) {
                case 'xml':
-                    res.send('Not supported');
+                    res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
                     break;
                default:
                     res.send(<?= modelVariable ?>.toObject());
@@ -168,23 +173,19 @@ module.exports = {
     'edit': function(req, res, next) {
             var title = "Edit <?= modelName ?>";
             <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-                    if(err) { return next(err); }
+                    if(err) { 
+                      return next(err); 
+                    }
                     if(<?= modelVariable ?>) {
-                      switch (format.toString()) {
-                          case 'xml':
-                              res.send('Not supported');
-                              break;
-                          default:
-                              res.send(<?= modelVariable ?>.toObject());
-                      }
+                       switch (format.toString()) {
+                           case 'xml':
+                               res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
+                               break;
+                           default:
+                               res.json(<?= modelVariable ?>.toObject());
+                       }
                     } else {
-                      res.send({
-                          error : {
-                             status: 404,
-                             message: '<?= modelVariable ?>  Not Found.',
-                             code: 'not_found'
-                          }
-                      });
+                       res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
                     }
         });
     },
@@ -205,31 +206,20 @@ module.exports = {
 
                 if (err) {
                     console.log(err);
-                    res.send({
-                        error : {
-                         status: 404,
-                         message: 'Could not update <?= modelVariable ?>: ' + err,
-                         code: 'not_updated'
-                    }});
+                    res.message(format, 'error', 'Could not update <?= modelVariable ?>: ' + err, 'not_updated', 500);
                     return;
                 }
                     
                 switch (format.toString()) {
                       case 'xml':
-                          res.send('Not supported');
+                          res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
                           break;
                       default:
-                          res.send(<?= modelVariable ?>.toObject());
+                          res.json(<?= modelVariable ?>.toObject());
                 }
              });
             } else {
-                res.send({
-                         error : {
-                             status: 404,
-                             message: '<?= modelVariable ?>  Not Found.',
-                             code: 'not_found'
-                        }
-                });
+                res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
             }
         });
     },
@@ -249,20 +239,15 @@ module.exports = {
             <?= modelVariable ?>.save(function(err) {
 
                if (err) {
-                    res.send({
-                        error : {
-                         status: 404,
-                         message: 'Could not create <?= modelVariable ?>: ' + err,
-                         code: 'not_created'
-                    }});
+                    res.message(format, 'error', 'Could not create <?= modelVariable ?>: ' + err, 'not_created', 500);
                     return;
                }
                 switch (format.toString()) {
                       case 'xml':
-                          res.send('Not supported');
+                          res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
                           break;
                       default:
-                          res.send(<?= modelVariable ?>.toObject());
+                          res.json(<?= modelVariable ?>.toObject());
                 }
         });
     },
@@ -276,34 +261,19 @@ module.exports = {
      * @param {Function} next
      **/
     'destroy': function(req, res, next){
-
+            var format = req.params.format || '';
             <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
 
             if (!<?= modelVariable ?>) {
-                    res.send({
-                         error : {
-                             status: 404,
-                             message: 'Unable to locate the <?= modelVariable ?> to delete!',
-                             code: 'not_found'
-                        }
-                    });
+                res.message(format, 'error', 'Unable to locate the <?= modelVariable ?> to delete!', 'not_found', 404);
                 return false;
             };
 
             <?= modelVariable ?>.destroy(function(err) {
                 if(err) {
-                    res.send({
-                         error : {
-                             status: 404,
-                             message: 'There was an error deleting the <?= modelVariable ?>!',
-                             code: 'not_deleting'
-                        }
-                    });
+                   res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
                 } else {
-                    res.send({
-                           status: 200,
-                           message: '<?= modelVariable ?> deleted!'
-                    });
+                   res.message(format, 'success', '<?= modelVariable ?> deleted!', 'item_deleted', 200);
                 }
             });
         });
@@ -318,20 +288,12 @@ module.exports = {
      * @param {Function} next
      **/
     'destroyall': function(req, res, next){
+        var format = req.params.format || '';
         <?= modelName ?>.destroyAll(function(err) {
                 if(err) {
-                    res.send({
-                         error : {
-                             status: 404,
-                             message: 'There was an error deleting the <?= modelVariable ?>!',
-                             code: 'not_deleting'
-                        }
-                    });
+                   res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
                 } else {
-                    res.send({
-                           status: 200,
-                           message: '<?= controllerName ?> deleted!'
-                    });
+                   res.message(format, 'success', '<?= controllerName ?> deleted!', 'all_deleted', 200);
                 }
         });
     }

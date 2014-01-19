@@ -16,12 +16,12 @@
     
  Options:     
  
-    -sess                       session store
-    -auth                       authorization support
-    -theme <name>               theme (default|black|blue|green|orange|pink|violet) 
-    -jade                       view engine support (ejs|jade) 
+    --sess                       session store
+    --auth                       authorization support
+    --theme <name>               theme (default|black|blue|green|orange|pink|violet) 
+    --jade                       view engine support (ejs|jade) 
                                 defaults to ejs 
-    -db                         database [driver]:[username]:[password]:[database]
+    --db                         database [driver]:[database]:[port]:[username]:[password]
                                 drivers - redis|mongodb|mysql|sqlite3|postgres
                                 defaults to memory
             
@@ -39,6 +39,9 @@
   
     # create new mvc project
     $ trinte -i Test -sess -auth
+  
+    # create new mvc project with db
+    $ trinte -i Test -sess -auth -db mysql:test:3306:root 
     
     # create scaffold
     $ trinte -g crud Post active:bool name:string desc:text created:date

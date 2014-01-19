@@ -1,3 +1,4 @@
+[![NPM version](https://badge.fury.io/js/trinte-creator.png)](http://badge.fury.io/js/trinte-creator)
 ## Script Creation module
 
 Script creator for TrinteJS Javascript MVC Framework. 
