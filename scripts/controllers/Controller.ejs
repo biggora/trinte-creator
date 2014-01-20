@@ -261,10 +261,10 @@ module.exports = {
 
             switch (format.toString()) {
                 case 'json':
-                    res.json(<?= modelVariable ?>.toObject());
+                    res.json(201, <?= modelVariable ?>.toObject());
                     break;
                 case 'xml':
-                    res.xml({ root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
+                    res.xml(201, { root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
                     break;
                 default:
                     req.flash('info','<?= modelName ?> created');

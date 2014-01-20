@@ -244,10 +244,10 @@ module.exports = {
                }
                 switch (format.toString()) {
                       case 'xml':
-                          res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
+                          res.xml(201, { root : { item : <?= modelVariable ?>.toObject() } });
                           break;
                       default:
-                          res.json(<?= modelVariable ?>.toObject());
+                          res.json(201, <?= modelVariable ?>.toObject());
                 }
         });
     },
