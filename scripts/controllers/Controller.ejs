@@ -20,9 +20,9 @@
   var addView = namespace && namespace !== "" ? namespace + "/" : "" ;
   var nsPath = namespace && namespace !== "" ? namespace + "_" : "" ;
 ?>
-var pager = require('<?= addIncl ?>../lib/pager.js'),
-Tools = require('<?= addIncl ?>../lib/tools.js'),
-ViewTemplatePath = '<?= addView ?><?= basePathPlural ?>';
+var pager = require('<?= addIncl ?>../lib/pager.js');
+var Tools = require('<?= addIncl ?>../lib/tools.js');
+var ViewTemplatePath = '<?= addView ?><?= basePathPlural ?>';
 
 module.exports = {
 
@@ -54,9 +54,9 @@ module.exports = {
 
         if(sort && sort !== '') {
             var direction = 'ASC';
-            if(sort.substr(0,1) === '-') {
+            if(sort.substr(0, 1) === '-') {
                 direction = 'DESC';
-                sort = sort.substr(1,sort.length);
+                sort = sort.substr(1, sort.length);
             }
             opts.order = sort + " " + direction;
         }
@@ -68,16 +68,18 @@ module.exports = {
                     regex : search
             };
         }
-        <? }}) ?>
-        
-        Tools.validateFields(new <?= modelName ?>(), query, {}, function(err, filtered) {
+        <? }}) ?>  
+        if( req.session ) {
+            req.session.returnTo = req.originalUrl || req.url;
+        }
+
+        Tools.validateFields(<?= modelName ?>, query, {}, function(err, filtered) {
             for (var field in filtered) {
                 opts.where[field] = filtered[field];
             }
-            <?= modelName ?>.count(opts.where, function(err, count) {
+            <?= modelName ?>.count({ where : opts.where }, function(err, count) {
                 total = count;
-                var pagerHtml = pager.render(from, to, total, pathTo.<?= nsPath ?><?= basePathPlural ?>());
-
+                var pagerHtml = pager.render(from, to, total, pathTo.<?= nsPath ?><?= basePathPlural ?>(), query);
                 <?= modelName ?>.all(opts, function (err, <?= basePathPlural ?>) {
                     if (err) {
                         return next(err);
@@ -91,7 +93,7 @@ module.exports = {
                         items_total: total, 
                         items_start: from, 
                         items_end: from + to
-                    }
+                    };
                     
                     switch (format.toString()) {
                         case 'json':
@@ -133,21 +135,31 @@ module.exports = {
                    return next(err); 
                 }
                 if(<?= modelVariable ?>) {
-                   switch (format.toString()) {
-                       case 'json':
-                           res.json(<?= modelVariable ?>.toObject());
-                           break;
-                       case 'xml':
-                           res.xml({ root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
-                           break;
-                       default:
-                           res.render(ViewTemplatePath + "/show",{
-                               <?= modelVariable ?>:<?= modelVariable ?>,
-                               title:title
-                           });
-                   }
+                   Tools.validateFields(<?= modelName ?>, req.body, {
+                       validate: true
+                   }, function (err, filtered) {
+                       if(err && err.length) {
+                           req.flash('error','Could not update user: ' + err.join('\n'));
+                           res.redirect(pathTo.edit_user(user));
+                       } else {
+                           switch (format.toString()) {
+                               case 'json':
+                                    res.json(<?= modelVariable ?>.toObject());
+                                   break;
+                               case 'xml':
+                                    res.xml({ root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
+                                   break;
+                               default:
+                                   res.render(ViewTemplatePath + "/show",{
+                                          <?= modelVariable ?>:<?= modelVariable ?>,
+                                          title:title
+                                   });
+                           }
+                       }
+                   });
                 } else {
-                    res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
+                    req.flash('warning', '<?= modelVariable ?> Not Found.');
+                    res.redirect(pathTo.<?= nsPath ?><?= basePathPlural ?>());
                 }
         });
     },
@@ -162,7 +174,7 @@ module.exports = {
      **/
     'new': function(req, res, next) {
         var title = "New <?= modelName ?>";
-        var <?= modelVariable ?> = new <?= modelName ?>();
+        var <?= modelVariable ?> = new <?= modelName ?>(req.query);
         res.render(ViewTemplatePath + "/new",{
               <?= modelVariable ?>:<?= modelVariable ?>,
               title:title
@@ -185,6 +197,11 @@ module.exports = {
                    return next(err);
                }
                if(<?= modelVariable ?>) {
+                  if(req.query) {
+                     for( var key in req.query) {
+                          <?= modelVariable ?>[key] = req.query[key];    
+                     }
+                  }
                   switch (format.toString()) {
                        case 'json':
                            res.json(<?= modelVariable ?>.toObject());
@@ -199,7 +216,8 @@ module.exports = {
                            });
                   }
                } else {
-                   res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
+                    req.flash('warning','<?= modelVariable ?> Not Found.');
+                    res.redirect(pathTo.<?= nsPath ?><?= basePathPlural ?>());
                }
         });
     },
@@ -215,27 +233,34 @@ module.exports = {
     'update': function(req, res, next) {
         var format = req.params.format || '';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-            <?= modelVariable ?>.updateAttributes(req.body.<?= modelVariable ?>, function(err) {
-
+            Tools.validateFields(<?= modelName ?>, req.body.<?= modelVariable ?>, {
+                validate: true
+            }, function(err, filtered) {
                 if (err) {
-                    console.log(err);
-                    req.flash('error','Could not update <?= modelVariable ?>: ' + err);
-                    res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                    req.flash('error','Could not update <?= modelVariable ?>: ' + err.join(', \n'));
+                    res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>, req.body.<?= modelVariable ?>));
                     return;
                 }
-
-                switch (format.toString()) {
-                    case 'json':
-                        res.json(<?= modelVariable ?>.toObject());
-                        break;
-                    case 'xml':
-                        res.xml({ root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
-                        break;
-                    default:
-                        req.flash('info', '<?= modelName ?> updated');
-                        res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
-                }
-            });
+                <?= modelVariable ?>.updateAttributes(filtered, function(err) {
+                    if (err) {
+                        console.log(err);
+                        req.flash('error','Could not update <?= modelVariable ?>: ' + err);
+                        res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                        return;
+                    }
+                    switch (format.toString()) {
+                        case 'json':
+                            res.json(<?= modelVariable ?>.toObject());
+                           break;
+                        case 'xml':
+                            res.xml({ root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
+                           break;
+                        default:
+                            req.flash('success', '<?= modelName ?> updated');
+                            res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                   }
+               });
+            });  
         });
     },
 
@@ -249,28 +274,34 @@ module.exports = {
      **/
     'create': function(req, res, next){
         var format = req.params.format || '';
-        var <?= modelVariable ?> = new <?= modelName ?>(req.body.<?= modelVariable ?>);
-
-        <?= modelVariable ?>.save(function(err) {
-
+        Tools.validateFields(<?= modelName ?>, req.body.<?= modelVariable ?>, {
+            validate: true
+        }, function(err, filtered) {
             if (err) {
-                req.flash('error','Could not create <?= modelVariable ?>: ' + err);
-                res.redirect(pathTo.<?= nsPath ?><?= basePathPlural ?>());
+                req.flash('error','Could not create <?= modelVariable ?>: ' + err.join(', \n'));
+                res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(req.body.<?= modelVariable ?>));
                 return;
             }
-
-            switch (format.toString()) {
-                case 'json':
-                    res.json(201, <?= modelVariable ?>.toObject());
-                    break;
-                case 'xml':
-                    res.xml(201, { root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
-                    break;
-                default:
-                    req.flash('info','<?= modelName ?> created');
-                    res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
-            }
-        });
+            var <?= modelVariable ?> = new <?= modelName ?>(filtered);        
+            <?= modelVariable ?>.save(function(err) {
+                if (err) {
+                    req.flash('error','Could not create <?= modelVariable ?>: ' + err);
+                    res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                    return;
+                }
+                switch (format.toString()) {
+                    case 'json':
+                        res.json(201, <?= modelVariable ?>.toObject());
+                        break;
+                    case 'xml':
+                        res.xml(201, { root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
+                        break;
+                    default:
+                        req.flash('success','<?= modelName ?> created');
+                        res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                }
+            });
+       });
     },
 
     /**
@@ -282,22 +313,20 @@ module.exports = {
      * @param {Function} next
      **/
     'destroy': function(req, res, next){
-
+         var returnTo = (req.session || {} ).returnTo || pathTo.<?= nsPath ?><?= basePathPlural ?>();
          <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-
                 if (!<?= modelVariable ?>) {
                     req.flash('error','Unable to locate the <?= modelVariable ?> to delete!');
                     res.send('false');
                     return false;
                 };
-
                 <?= modelVariable ?>.destroy(function(err) {
                    if(err) {
                        req.flash('error','There was an error deleting the <?= modelVariable ?>!');
-                       res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
+                       res.send('"' + returnTo + '"');
                    } else {
-                       req.flash('info','<?= modelName ?> deleted');
-                       res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
+                       req.flash('success','<?= modelName ?> deleted');
+                       res.send('"' + returnTo + '"');
                    }
                });
         });
@@ -312,13 +341,14 @@ module.exports = {
      * @param {Function} next
      **/
     'destroyall': function(req, res, next){
+        var returnTo = (req.session || {} ).returnTo || pathTo.<?= nsPath ?><?= basePathPlural ?>();
         <?= modelName ?>.destroyAll(function(err) {
             if(err) {
                 req.flash('error','There was an error deleting the <?= basePathPlural ?>!');
-                res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
+                res.send('"' + returnTo + '"');
             } else {
-                req.flash('info','<?= controllerName ?> deleted');
-                res.send('"' + pathTo.<?= nsPath ?><?= basePathPlural ?>() + '"');
+                req.flash('success','<?= controllerName ?> deleted');
+                res.send('"' + returnTo + '"');
             }
         });
     }

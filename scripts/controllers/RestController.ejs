@@ -1,5 +1,5 @@
 /**
- *  <?= controllerName ?> Controller
+ *  <?= controllerName ?> REST Controller
  *
  *  @package     <?= pack ?>
  *  @version     <?= version ?>
@@ -20,16 +20,15 @@
   var addView = namespace && namespace !== "" ? namespace + "/" : "" ;
   var nsPath = namespace && namespace !== "" ? namespace + "_" : "" ;
 ?>
-var pager = require('<?= addIncl ?>../lib/pager.js'),
-Tools = require('<?= addIncl ?>../lib/tools.js'),
-ViewTemplatePath = '<?= addView ?><?= basePathPlural ?>';
+var Tools = require('<?= addIncl ?>../lib/tools.js');
+var ViewTemplatePath = '<?= addView ?><?= basePathPlural ?>';
 
 module.exports = {
 
     /**
      * Index action, returns a list either via the <?= addView ?>views/<?= basePathPlural ?>/index.ejs view or via json
      * Default mapping to GET '<?= namespace ?>/<?= basePathPlural ?>'
-     * For JSON use '<?= namespace ?>/<?= basePathPlural ?>.json'
+     * For XML use '<?= namespace ?>/<?= basePathPlural ?>.xml'
      * View Helper method pathTo.<?= nsPath ?><?= basePathPlural ?>()
      * For paging use  pathTo.paging_<?= nsPath ?><?= basePathPlural ?>(from, to)
      * @param {Object} req
@@ -69,31 +68,29 @@ module.exports = {
                     regex : search
             };
         }
-        <? }}) ?>        
-        Tools.validateFields(new <?= modelName ?>(), query, {}, function(err, filtered) {
+        <? }}) ?>
+        Tools.validateFields(<?= modelName ?>, query, {}, function(err, filtered) {
             for (var field in filtered) {
                 opts.where[field] = filtered[field];
             }
             <?= modelName ?>.count(opts.where, function(err, count) {
                 total = count;
-                var pagerHtml = pager.render(from, to, total, pathTo.<?= nsPath ?><?= basePathPlural ?>());
-
                 <?= modelName ?>.all(opts, function (err, <?= basePathPlural ?>) {
                     if (err) {
                         return next(err);
                     }
-                    
+
                     var out = {
                         title: title,
                         first_page: 1,
-                        curent_page: from/to + 1, 
+                        curent_page: from/to + 1,
                         total_pages: Math.ceil(total/to) + 1,
-                        items_per_page: to, 
-                        items_total: total, 
-                        items_start: from, 
+                        items_per_page: to,
+                        items_total: total,
+                        items_start: from,
                         items_end: from + to
-                    }
-                    
+                    };
+
                     switch (format.toString()) {
                         case 'xml':
                             out.items = <?= basePathPlural ?>.map(function(u) {
@@ -115,78 +112,30 @@ module.exports = {
     /**
      * Show action, returns shows a single item via <?= addView ?>views/<?= basePathPlural ?>/show.ejs view or via json
      * Default mapping to GET '<?= namespace ?>/<?= basePath ?>/:id'
-     * For JSON use '<?= namespace ?>/<?= basePath ?>/:id.json'
+     * For XML use '<?= namespace ?>/<?= basePath ?>/:id.xml'
      * View Helper method pathTo.show_<?= nsPath ?><?= modelVariable ?>(instance)
      * @param {Object} req
      * @param {Object} res
      * @param {Function} next
      **/
     'show': function(req, res, next) {
-            var title = "Show <?= modelName ?>";
-            var format = req.params.format || '';
-            <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-                    if(err) { 
-                        return next(err); 
-                    }
-                    if(<?= modelVariable ?>) {                    
-                       switch (format.toString()) {
+        var title = "Show <?= modelName ?>";
+        var format = req.params.format || '';
+        <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
+              if(err) {
+                   return next(err);
+              }
+              if(<?= modelVariable ?>) {
+                   switch (format.toString()) {
                            case 'xml':
-                               res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
+                               res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
                                break;
                            default:
-                               res.send(<?= modelVariable ?>.toObject());
-                       }
-                    } else {
-                        res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
-                    }
-            });
-    },
-
-    /**
-     * New action, returns a form via <?= addView ?>views/<?= basePathPlural ?>/edit.ejs view no JSON view.
-     * Default mapping to GET '<?= namespace ?>/<?= basePath ?>/new'
-     * View Helper method pathTo.new_<?= nsPath ?><?= modelVariable ?>()
-     * @param {Object} req
-     * @param {Object} res
-     * @param {Function} next
-     **/
-    'new': function(req, res, next) {
-        var title = "New <?= modelName ?>";
-        var <?= modelVariable ?> = new <?= modelName ?>();
-        switch (format.toString()) {
-               case 'xml':
-                    res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
-                    break;
-               default:
-                    res.send(<?= modelVariable ?>.toObject());
-        }
-    },
-
-    /**
-     * Edit action, returns a form via <?= addView ?>views/<?= basePathPlural ?>/edit.ejs view no JSON view.
-     * Default mapping to GET '<?= namespace ?>/<?= basePath ?>/:id/edit'
-     * View Helper method pathTo.edit_<?= nsPath ?><?= modelVariable ?>(instance)
-     * @param {Object} req
-     * @param {Object} res
-     * @param {Function} next
-     **/
-    'edit': function(req, res, next) {
-            var title = "Edit <?= modelName ?>";
-            <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-                    if(err) { 
-                      return next(err); 
-                    }
-                    if(<?= modelVariable ?>) {
-                       switch (format.toString()) {
-                           case 'xml':
-                               res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
-                               break;
-                           default:
-                               res.json(<?= modelVariable ?>.toObject());
-                       }
-                    } else {
-                       res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
-                    }
+                               res.json(200, { item : <?= modelVariable ?>.toObject() });
+                   }
+              } else {
+                   res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
+              }
         });
     },
 
@@ -202,22 +151,29 @@ module.exports = {
         var format = req.params.format || '';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
             if(<?= modelVariable ?>) {
-             <?= modelVariable ?>.updateAttributes(req.body.<?= modelVariable ?>, function(err) {
-
-                if (err) {
-                    console.log(err);
-                    res.message(format, 'error', 'Could not update <?= modelVariable ?>: ' + err, 'not_updated', 500);
-                    return;
-                }
-                    
-                switch (format.toString()) {
-                      case 'xml':
-                          res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
-                          break;
-                      default:
-                          res.json(<?= modelVariable ?>.toObject());
-                }
-             });
+                Tools.validateFields(<?= modelName ?>, req.body, {
+                     validate: true
+                }, function (err, filtered) {
+                   if (err) {
+                       console.log(err);
+                       res.message(format, 'error', 'Could not update <?= modelVariable ?>: ' + err.join(', \n'), 'not_updated', 500);
+                       return;
+                   }
+                   <?= modelVariable ?>.updateAttributes(filtered, function(err) {
+                       if (err) {
+                           console.log(err);
+                           res.message(format, 'error', 'Could not update <?= modelVariable ?>: ' + err, 'not_updated', 500);
+                           return;
+                       }
+                       switch (format.toString()) {
+                           case 'xml':
+                                res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
+                              break;
+                           default:
+                                res.json(200, { item : <?= modelVariable ?>.toObject() });
+                       }
+                   });
+               });
             } else {
                 res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
             }
@@ -234,21 +190,27 @@ module.exports = {
      **/
     'create': function(req, res, next){
         var format = req.params.format || '';
-        var <?= modelVariable ?> = new <?= modelName ?>(req.body.<?= modelVariable ?>);
-
-            <?= modelVariable ?>.save(function(err) {
-
-               if (err) {
-                    res.message(format, 'error', 'Could not create <?= modelVariable ?>: ' + err, 'not_created', 500);
-                    return;
-               }
-                switch (format.toString()) {
+        Tools.validateFields(<?= modelName ?>, req.body, {
+             validate: true
+        }, function (err, filtered) {
+             if (err) {
+                 res.message(format, 'error', 'Could not create user: ' + err.join(', \n'), 'not_created', 500);
+                 return;
+             }
+             var <?= modelVariable ?> = new <?= modelName ?>(filtered);
+             <?= modelVariable ?>.save(function(err) {
+                 if (err) {
+                      res.message(format, 'error', 'Could not create <?= modelVariable ?>: ' + err, 'not_created', 500);
+                      return;
+                 }
+                 switch (format.toString()) {
                       case 'xml':
                           res.xml(201, { root : { item : <?= modelVariable ?>.toObject() } });
                           break;
                       default:
-                          res.json(201, <?= modelVariable ?>.toObject());
-                }
+                          res.json(201, { item : <?= modelVariable ?>.toObject() });
+                 }
+             });
         });
     },
 
@@ -261,21 +223,20 @@ module.exports = {
      * @param {Function} next
      **/
     'destroy': function(req, res, next){
-            var format = req.params.format || '';
-            <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
+        var format = req.params.format || '';
+        <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
+             if (!<?= modelVariable ?>) {
+                   res.message(format, 'error', 'Unable to locate the <?= modelVariable ?> to delete!', 'not_found', 404);
+                   return false;
+             };
 
-            if (!<?= modelVariable ?>) {
-                res.message(format, 'error', 'Unable to locate the <?= modelVariable ?> to delete!', 'not_found', 404);
-                return false;
-            };
-
-            <?= modelVariable ?>.destroy(function(err) {
-                if(err) {
-                   res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
-                } else {
-                   res.message(format, 'success', '<?= modelVariable ?> deleted!', 'item_deleted', 200);
-                }
-            });
+             <?= modelVariable ?>.destroy(function(err) {
+                   if(err) {
+                      res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
+                   } else {
+                      res.message(format, 'success', '<?= modelVariable ?> deleted!', 'item_deleted', 200);
+                   }
+             });
         });
     },
 
@@ -290,11 +251,11 @@ module.exports = {
     'destroyall': function(req, res, next){
         var format = req.params.format || '';
         <?= modelName ?>.destroyAll(function(err) {
-                if(err) {
-                   res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
-                } else {
-                   res.message(format, 'success', '<?= controllerName ?> deleted!', 'all_deleted', 200);
-                }
+             if(err) {
+                 res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
+             } else {
+                 res.message(format, 'success', '<?= controllerName ?> deleted!', 'all_deleted', 200);
+             }
         });
     }
 };
