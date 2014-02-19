@@ -22,12 +22,21 @@
         "email": "aleksej@gordejev.lv",
         "url": "https://github.com/biggora/"
     },
+    "contributors": [{
+        "name": "Aleksej Gordejev",
+        "email": "aleksej@gordejev.lv",
+        "url": "https://github.com/biggora/"
+    }],
     "scripts": {
         "test": "nodeunit tests/test.js"
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/biggora/trinte-ejs.git"
+        "url": "git://github.com/biggora/trinte-creator.git"
+    },
+    "bugs": {
+        "url" : "http://github.com/biggora/trinte-creator/issues",
+        "email" : "aleksej@gordejev.lv"
     },
     "directories": {
         "lib": "lib",
@@ -39,7 +48,7 @@
         "trinte-ejs": "0.0.x",
         "ejs": "0.8.x",
         "wrench": "1.5.x",
-        "colors" : "0.6.x"   
+        "colors" : "0.x.x"   
     },
     "description": "TrinteJS script creator",
     "name": "trinte-creator"
