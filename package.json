@@ -1,5 +1,6 @@
 {
-    "optionalDependencies": {},
+    "name": "trinte-creator",
+    "description": "TrinteJS script creator",
     "keywords": [
         "ejs",
         "trinte",
@@ -7,16 +8,12 @@
         "caminte",
         "script"
     ],
-    "engines": {
-        "node": ">=0.6"
-    },
-    "licenses": [],
-    "devDependencies": {
-        "nodeunit": ">=0.5.4"
-    },
     "homepage": "http://www.trintejs.com/",
     "version": "0.0.4-2",
-    "main": "./index.js",
+    "licenses": [{
+      "type": "MIT",
+      "url": "http://github.com/biggora/trinte-creator/blob/master/LICENSE"
+    }],
     "author": {
         "name": "Aleksej Gordejev",
         "email": "aleksej@gordejev.lv",
@@ -27,9 +24,6 @@
         "email": "aleksej@gordejev.lv",
         "url": "https://github.com/biggora/"
     }],
-    "scripts": {
-        "test": "nodeunit tests/test.js"
-    },
     "repository": {
         "type": "git",
         "url": "git://github.com/biggora/trinte-creator.git"
@@ -37,6 +31,10 @@
     "bugs": {
         "url" : "http://github.com/biggora/trinte-creator/issues",
         "email" : "aleksej@gordejev.lv"
+    },
+    "main": "./index.js",
+    "scripts": {
+        "test": "nodeunit tests/test.js"
     },
     "directories": {
         "lib": "lib",
@@ -50,6 +48,11 @@
         "wrench": "1.5.x",
         "colors" : "0.x.x"   
     },
-    "description": "TrinteJS script creator",
-    "name": "trinte-creator"
+    "devDependencies": {
+        "nodeunit": ">=0.5.4"
+    },
+    "optionalDependencies": {},
+    "engines": {
+        "node": ">=0.6"
+    }
 }
