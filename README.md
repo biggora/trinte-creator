@@ -42,3 +42,6 @@ Script creator for TrinteJS Javascript MVC Framework.
 
 - [CaminteJS](http://www.camintejs.com/) - Cross-db ORM for NodeJS
 - [2CO](https://github.com/biggora/2co) - is the module that will provide nodejs adapters for 2checkout API payment gateway.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/biggora/trinte-creator/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
