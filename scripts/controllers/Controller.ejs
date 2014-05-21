@@ -60,15 +60,21 @@ module.exports = {
             }
             opts.order = sort + " " + direction;
         }
-        <? fields.forEach(function(field){ ?>
-        <? if(field.param_val == 'name' || field.param_val == 'title'){ ?>
-        if(search && search != "") {
-            search = search.toString().replace(/^\s|\s$/,"");
-            opts.where.<?= field.param_val ?> = {
-                    regex : search
-            };
+
+        if (search && search !== "") {
+            var fieldName = 'name';
+            var queryCond = '';
+            search = search.toString().replace(/^\s|\s$/, "");
+            var queryData = search.split('|');
+            if (queryData.length > 1) {
+                fieldName = queryData[0];
+                queryCond = queryData[1];
+            } else {
+                queryCond = search;
+            }
+            opts.where[fieldName] = new RegExp(queryCond, 'gi');
         }
-        <? }}) ?>  
+        
         if( req.session ) {
             req.session.returnTo = req.originalUrl || req.url;
         }
@@ -236,7 +242,7 @@ module.exports = {
             Tools.validateFields(<?= modelName ?>, req.body.<?= modelVariable ?>, {
                 validate: true
             }, function(err, filtered) {
-                if (err) {
+                if (err && err.length) {
                     req.flash('error','Could not update <?= modelVariable ?>: ' + err.join(', \n'));
                     res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>, req.body.<?= modelVariable ?>));
                     return;
@@ -277,7 +283,7 @@ module.exports = {
         Tools.validateFields(<?= modelName ?>, req.body.<?= modelVariable ?>, {
             validate: true
         }, function(err, filtered) {
-            if (err) {
+            if (err && err.length) {
                 req.flash('error','Could not create <?= modelVariable ?>: ' + err.join(', \n'));
                 res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(req.body.<?= modelVariable ?>));
                 return;
