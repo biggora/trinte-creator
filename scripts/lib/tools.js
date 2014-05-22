@@ -134,7 +134,7 @@ module.exports = {
                         }
                     }
                 } else {
-                    if (sVal === null) {
+                    if (sVal === null && model[prop] !== null) {
                         errors.push(' `' + prop + '` ivalid value ' + query[prop]);
                     } else {
                         filtered[prop] = sVal;
@@ -142,7 +142,8 @@ module.exports = {
                 }
             }
         }
-        errors = errors.length && options.validate === true ? errors : null;
+
+        errors = errors.length && options.validate === true ? errors : [];
         if (options.validate === true) {
             var newModel = new ins(filtered);
             newModel.isValid(function (valid) {
