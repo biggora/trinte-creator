@@ -9,7 +9,7 @@
         "script"
     ],
     "homepage": "http://www.trintejs.com/",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "licenses": [{
       "type": "MIT",
       "url": "http://github.com/biggora/trinte-creator/blob/master/LICENSE"

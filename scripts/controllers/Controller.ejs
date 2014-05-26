@@ -238,6 +238,7 @@ module.exports = {
      **/
     'update': function(req, res, next) {
         var format = req.params.format || '';
+        var action = req.body._action || 'save';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
             Tools.validateFields(<?= modelName ?>, req.body.<?= modelVariable ?>, {
                 validate: true
@@ -256,14 +257,30 @@ module.exports = {
                     }
                     switch (format.toString()) {
                         case 'json':
-                            res.json(<?= modelVariable ?>.toObject());
+                              res.json(<?= modelVariable ?>.toObject());
                            break;
                         case 'xml':
-                            res.xml({ root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
+                              res.xml({ root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
                            break;
                         default:
-                            req.flash('success', '<?= modelName ?> updated');
-                            res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                           switch(action) {
+                              case 'new':
+                                    req.flash('info','<?= modelName ?> updated and new');
+                                    res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>());
+                                 break;
+                              case 'copy':
+                                    req.flash('info','<?= modelName ?> updated and copy');
+                                    delete <?= modelVariable ?>.id;
+                                    res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                                 break;
+                              case 'apply':
+                                    req.flash('success','<?= modelName ?> saved');
+                                    res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                                 break;
+                              default:
+                                    req.flash('success','<?= modelName ?> updated');
+                                    res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                           }
                    }
                });
             });  
@@ -280,6 +297,7 @@ module.exports = {
      **/
     'create': function(req, res, next){
         var format = req.params.format || '';
+        var action = req.body._action || 'save';
         Tools.validateFields(<?= modelName ?>, req.body.<?= modelVariable ?>, {
             validate: true
         }, function(err, filtered) {
@@ -303,8 +321,24 @@ module.exports = {
                         res.xml(201, { root : { <?= modelVariable ?> : <?= modelVariable ?>.toObject() } });
                         break;
                     default:
-                        req.flash('success','<?= modelName ?> created');
-                        res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                        switch(action) {
+                           case 'new':
+                                 req.flash('info','<?= modelName ?> created and new');
+                                 res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>());
+                              break;
+                           case 'copy':
+                                 req.flash('info','<?= modelName ?> created and copy');
+                                 delete <?= modelVariable ?>.id;
+                                 res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                              break;
+                           case 'apply':
+                                 req.flash('success','<?= modelName ?> saved');
+                                 res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                              break;
+                           default:
+                              req.flash('success','<?= modelName ?> created');
+                              res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                        }
                 }
             });
        });
