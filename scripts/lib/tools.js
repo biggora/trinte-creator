@@ -157,5 +157,31 @@ module.exports = {
         } else {
             callback && callback(errors, filtered);
         }
+    },
+    queryToDb: function (ins, query) {
+        var self = this;
+        var dbQuery = {};
+        var model = new ins();
+        model = typeof model === 'object' && model.toJSON ? model.toJSON() : model;
+        query = typeof query === 'object' ? query : {};
+        for (var prop in query) {
+            var sType = ins.whatTypeName(prop) || 'String';
+            if (typeof query[prop] === 'object') {
+                if (Object.prototype.toString.call(query[prop]) === '[object Array]') {
+                    dbQuery[prop] = {
+                        'in': query[prop].map(function (val) {
+                            return self.forDB(val, sType);
+                        })
+                    }
+                }
+            } else {
+                if (Object.prototype.hasOwnProperty.call(model, prop)) {
+                    var sVal = self.forDB(query[prop], sType)
+                    sVal = /string|text/gi.test(sType) ? new RegExp(sVal, 'gi') : sVal;
+                    dbQuery[prop] = sVal;
+                }
+            }
+        }
+        return dbQuery
     }
 };

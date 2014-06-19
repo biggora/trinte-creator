@@ -81,8 +81,11 @@ module.exports = {
 
         Tools.validateFields(<?= modelName ?>, query, {}, function(err, filtered) {
             for (var field in filtered) {
-                opts.where[field] = filtered[field];
+                if (filtered[field] != '') {
+                    opts.where[field] = filtered[field];
+                }
             }
+            opts.where = Tools.queryToDb(<?= modelName ?>, opts.where);
             <?= modelName ?>.count({ where : opts.where }, function(err, count) {
                 total = count;
                 var pagerHtml = pager.render(from, to, total, pathTo.<?= nsPath ?><?= basePathPlural ?>(), query);
@@ -98,7 +101,8 @@ module.exports = {
                         items_per_page: to, 
                         items_total: total, 
                         items_start: from, 
-                        items_end: from + to
+                        items_end: from + to,
+                        query: query
                     };
                     
                     switch (format.toString()) {
