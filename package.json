@@ -9,28 +9,32 @@
         "script"
     ],
     "homepage": "http://www.trintejs.com/",
-    "version": "0.0.10",
-    "licenses": [{
-      "type": "MIT",
-      "url": "http://github.com/biggora/trinte-creator/blob/master/LICENSE"
-    }],
+    "version": "0.0.11",
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://github.com/biggora/trinte-creator/blob/master/LICENSE"
+        }
+    ],
     "author": {
         "name": "Aleksej Gordejev",
         "email": "aleksej@gordejev.lv",
         "url": "https://github.com/biggora/"
     },
-    "contributors": [{
-        "name": "Aleksej Gordejev",
-        "email": "aleksej@gordejev.lv",
-        "url": "https://github.com/biggora/"
-    }],
+    "contributors": [
+        {
+            "name": "Aleksej Gordejev",
+            "email": "aleksej@gordejev.lv",
+            "url": "https://github.com/biggora/"
+        }
+    ],
     "repository": {
         "type": "git",
         "url": "git://github.com/biggora/trinte-creator.git"
     },
     "bugs": {
-        "url" : "http://github.com/biggora/trinte-creator/issues",
-        "email" : "aleksej@gordejev.lv"
+        "url": "http://github.com/biggora/trinte-creator/issues",
+        "email": "aleksej@gordejev.lv"
     },
     "main": "./index.js",
     "scripts": {
@@ -46,7 +50,7 @@
         "trinte-ejs": "0.0.x",
         "ejs": "0.8.x",
         "wrench": "1.5.x",
-        "colors" : "0.x.x"   
+        "colors": "0.x.x"
     },
     "devDependencies": {
         "nodeunit": ">=0.5.4"

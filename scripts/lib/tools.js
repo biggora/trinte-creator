@@ -73,7 +73,7 @@ module.exports = {
         switch (type.toString().toLowerCase()) {
             case 'boolean':
                 return self.parseBool(val);
-            case 'numder':
+            case 'number':
                 nVal = parseInt(val);
                 return isNaN(nVal) ? null : nVal;
                 break;
@@ -104,7 +104,15 @@ module.exports = {
         options = typeof options === 'object' ? options : {};
         for (var prop in query) {
             if (Object.prototype.hasOwnProperty.call(model, prop)) {
-                var sVal = self.forDB(query[prop], ins.whatTypeName(prop));
+                var sVal;
+                if (Object.prototype.toString.call(query[prop]) === '[object Array]') {
+                    sVal = query[prop].map(function(kVal){
+                        return self.forDB(kVal, ins.whatTypeName(prop));
+                    });
+                } else {
+                    sVal = self.forDB(query[prop], ins.whatTypeName(prop));
+                }
+
                 if (options.ignored) {
                     if (Object.prototype.toString.call(options.ignored) === '[object Array]') {
                         if (options.ignored.join('#').toString().indexOf(prop) === -1) {
@@ -169,14 +177,16 @@ module.exports = {
             if (typeof query[prop] === 'object') {
                 if (Object.prototype.toString.call(query[prop]) === '[object Array]') {
                     dbQuery[prop] = {
-                        'in': query[prop].map(function (val) {
+                        'inq': query[prop].map(function (val) {
                             return self.forDB(val, sType);
                         })
                     }
                 }
             } else {
                 if (Object.prototype.hasOwnProperty.call(model, prop)) {
-                    var sVal = self.forDB(query[prop], sType)
+                    var sVal = self.forDB(query[prop], sType);
+                    sVal = /string|text/gi.test(sType) ? sVal.replace(/\.|,|-|;|:|&/gi, ' ') : sVal;
+                    sVal = /string|text/gi.test(sType) ? sVal.replace(/\s+/gi, '|') : sVal;
                     sVal = /string|text/gi.test(sType) ? new RegExp(sVal, 'gi') : sVal;
                     dbQuery[prop] = sVal;
                 }

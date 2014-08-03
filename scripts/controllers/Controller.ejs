@@ -96,8 +96,8 @@ module.exports = {
                     var out = {
                         title: title,
                         first_page: 1,
-                        curent_page: from/to + 1, 
-                        total_pages: Math.ceil(total/to) + 1,
+                        curent_page: (from/to) + 1, 
+                        total_pages: parseInt((total/to).toFixed()) + 1,
                         items_per_page: to, 
                         items_total: total, 
                         items_start: from, 
@@ -149,8 +149,8 @@ module.exports = {
                        validate: true
                    }, function (err, filtered) {
                        if(err && err.length) {
-                           req.flash('error','Could not update user: ' + err.join('\n'));
-                           res.redirect(pathTo.edit_user(user));
+                           req.flash('error','Could not update <?= modelVariable ?>: ' + err.join('\n'));
+                           res.redirect(pathTo.edit_<?= modelVariable ?>(<?= modelVariable ?>.toObject()));
                        } else {
                            switch (format.toString()) {
                                case 'json':
@@ -275,15 +275,15 @@ module.exports = {
                               case 'copy':
                                     req.flash('info','<?= modelName ?> updated and copy');
                                     delete <?= modelVariable ?>.id;
-                                    res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                                    res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>.toObject()));
                                  break;
                               case 'apply':
                                     req.flash('success','<?= modelName ?> saved');
-                                    res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                                    res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>.toObject()));
                                  break;
                               default:
                                     req.flash('success','<?= modelName ?> updated');
-                                    res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                                    res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>.toObject()));
                            }
                    }
                });
@@ -333,15 +333,15 @@ module.exports = {
                            case 'copy':
                                  req.flash('info','<?= modelName ?> created and copy');
                                  delete <?= modelVariable ?>.id;
-                                 res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                                 res.redirect(pathTo.new_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>.toObject()));
                               break;
                            case 'apply':
                                  req.flash('success','<?= modelName ?> saved');
-                                 res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                                 res.redirect(pathTo.edit_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>.toObject()));
                               break;
                            default:
                               req.flash('success','<?= modelName ?> created');
-                              res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>));
+                              res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>(<?= modelVariable ?>.toObject()));
                         }
                 }
             });
