@@ -9,7 +9,7 @@
         "script"
     ],
     "homepage": "http://www.trintejs.com/",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "licenses": [
         {
             "type": "MIT",
@@ -48,7 +48,7 @@
         "trinte": "0.2.x",
         "trinte-themes": "0.0.x",
         "trinte-ejs": "0.0.x",
-        "ejs": "0.8.x",
+        "ejs": "1.x.x",
         "wrench": "1.5.x",
         "colors": "0.x.x"
     },
