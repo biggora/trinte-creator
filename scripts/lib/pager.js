@@ -6,7 +6,7 @@ var qs = require('querystring');
 /**
  * Plugin version
  */
-exports.version = '0.0.2';
+exports.version = '0.0.3';
 
 
 exports.render = function (skip, limit, total, path, data) {
@@ -14,6 +14,7 @@ exports.render = function (skip, limit, total, path, data) {
     var querystring = qs.stringify(data);
     var totalPages = Math.ceil(total / limit) + 1;
     var currentPage = skip / limit + 1;
+    var toShow = (skip + limit) > total ? total : (skip + limit);
     var result = '', start, finish;
     var selectedClass = 'page-selected';
     var visiblePages = 5;
@@ -48,7 +49,7 @@ exports.render = function (skip, limit, total, path, data) {
 
     // result += "<li style='margin-left:10px;'>&nbsp;Go To: <input id='pagerGoto' type='text' name='skip' value='' class='input-mini pager-page' title='Go to a specific start point, type and enter ...' /></li>";
     result += "</ul>";
-    result += "<span class='pull-right' style='font-size:14px;margin-top:22px'>" + (skip + 1) + " to " + (skip + limit) + " of " + (total) + "</span>";
+    result += "<span class='pull-right' style='font-size:14px;margin-top:22px'>" + (skip + 1) + " to " + (toShow) + " of " + (total) + "</span>";
 
     return "<div><ul class='pagination pagination-sm'>" + result + "</div>";
 
