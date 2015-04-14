@@ -1,3 +1,12 @@
+/**
+ *  Default App Controller
+ *
+ *  @link        https://github.com/biggora/trinte/wiki
+ *
+ *  Created by create-controller script
+ *  App based on TrinteJS MVC framework
+ *  TrinteJS homepage http://www.trintejs.com
+ **/
 var fs = require('fs');
 
 module.exports = {

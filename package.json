@@ -2,6 +2,8 @@
     "name": "trinte-creator",
     "description": "TrinteJS script creator",
     "keywords": [
+        "script",
+        "creator",
         "ejs",
         "trinte",
         "trintejs",
@@ -9,7 +11,7 @@
         "script"
     ],
     "homepage": "http://www.trintejs.com/",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "licenses": [
         {
             "type": "MIT",
