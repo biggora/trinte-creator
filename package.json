@@ -11,7 +11,7 @@
         "script"
     ],
     "homepage": "http://www.trintejs.com/",
-    "version": "0.0.17",
+    "version": "0.0.18",
     "licenses": [
         {
             "type": "MIT",
@@ -47,11 +47,11 @@
         "tests": "tests"
     },
     "dependencies": {
-        "trinte": "0.2.x",
-        "trinte-themes": "0.0.x",
-        "trinte-ejs": "0.0.x",
-        "ejs": "1.x.x",
-        "wrench": "1.5.x",
+        "trinte": "*",
+        "trinte-themes": "*",
+        "trinte-ejs": "*",
+        "ejs": "*",
+        "wrench": "1.x.x",
         "colors": "0.x.x"
     },
     "devDependencies": {
