@@ -1,0 +1,20 @@
+
+  Trinte Creator v<?- version ?> This is the help for generate controller.
+  =======================================================================
+ 
+  Usage: trinte -g controller <[namespace]modelName> [option(s)] [action(s)]
+
+  Options:  
+
+    [namespace]     Generate controller with namspace  
+    [modelName]     The name (case sensitive) for the controller you want to create.
+    force           force on exists controller
+    [action]        Space separated actions list    
+  
+  Examples:
+  
+    # create controller Post without actions
+    $ trinte -g controller Post
+    
+    # create controller Post with actions
+    $ trinte -g controller Post index find create

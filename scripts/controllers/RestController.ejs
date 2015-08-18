@@ -1,0 +1,282 @@
+/**
+ *  <?= controllerName ?> REST Controller
+ *
+ *  @package     <?= pack ?>
+ *  @version     <?= version ?>
+ *  @desc        <?= description ?>
+ *  @author      <?= author ?>
+ *  @created     <?= created ?>
+ *  @link        https://github.com/biggora/trinte/wiki
+ *
+ *  Created by create-controller script
+ *  App based on TrinteJS MVC framework
+ *  TrinteJS homepage http://www.trintejs.com
+ **/
+<?
+  namespace = namespace || "";
+  var modelVariable = modelName.toLowerCase();
+  var basePath = modelName.toLowerCase();
+  var basePathPlural = controllerName.toLowerCase();
+  var addIncl = namespace && namespace !== "" ? "../" : "" ;
+  var addView = namespace && namespace !== "" ? namespace + "/" : "" ;
+  var nsPath = namespace && namespace !== "" ? namespace + "_" : "" ;
+?>
+var Tools = require('<?= addIncl ?>../lib/tools.js');
+var ViewTemplatePath = '<?= addView ?><?= basePathPlural ?>';
+
+module.exports = {
+
+    /**
+     * Index action, returns a list either via the <?= addView ?>views/<?= basePathPlural ?>/index.ejs view or via json
+     * Default mapping to GET '<?= namespace ?>/<?= basePathPlural ?>'
+     * For XML use '<?= namespace ?>/<?= basePathPlural ?>.xml'
+     * View Helper method pathTo.<?= nsPath ?><?= basePathPlural ?>()
+     * For paging use  pathTo.paging_<?= nsPath ?><?= basePathPlural ?>(from, to)
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'index': function(req, res, next) {
+        var title = "<?= controllerName ?>";
+        var format = req.params.format || '';
+        var sort = req.query.sort || req.body.sort;
+        var search = req.query.search || req.body.search;
+        var fields = req.query.fields || req.body.fields;
+        var query = req.method === 'POST'? req.body : req.query;
+        var from = req.params.from ? parseInt(req.params.from) - 1 : 0;
+        var to = req.params.to ? parseInt(req.params.to) : 20;
+        var total = 0;
+        var opts = {
+            skip : from,
+            limit : to,
+            order : 'id DESC',
+            where : {}
+        };
+
+        if(sort && sort !== '') {
+            var direction = 'ASC';
+            if(sort.substr(0,1) === '-') {
+                direction = 'DESC';
+                sort = sort.substr(1,sort.length);
+            }
+            opts.order = sort + " " + direction;
+        }
+        <? fields.forEach(function(field){ ?>
+        <? if(field.param_val == 'name' || field.param_val == 'title'){ ?>
+        if(search && search != "") {
+            search = search.toString().replace(/^\s|\s$/,"");
+            opts.where.<?= field.param_val ?> = {
+                    regex : search
+            };
+        }
+        <? }}) ?>
+        Tools.validateFields(<?= modelName ?>, query, {}, function(err, filtered) {
+            for (var field in filtered) {
+                opts.where[field] = filtered[field];
+            }
+            <?= modelName ?>.count(opts.where, function(err, count) {
+                total = count;
+                <?= modelName ?>.all(opts, function (err, <?= basePathPlural ?>) {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    var out = {
+                        title: title,
+                        first_page: 1,
+                        curent_page: from/to + 1,
+                        total_pages: Math.ceil(total/to) + 1,
+                        items_per_page: to,
+                        items_total: total,
+                        items_start: from,
+                        items_end: from + to
+                    };
+
+                    switch (format.toString()) {
+                        case 'xml':
+                            out.items = <?= basePathPlural ?>.map(function(u) {
+                                return { item : u.toObject() };
+                            });
+                            res.xml({ root : out });
+                            break;
+                        default:
+                            out.items = <?= basePathPlural ?>.map(function(u) {
+                                return u.toObject();
+                            });
+                            res.json(out);
+                    }
+                });
+            });
+        });
+    },
+
+    /**
+     * New action, returns the new object as json.
+     * Default mapping to GET '<?= namespace ?>/<?= basePath ?>/new'
+     * View Helper method pathTo.new_<?= nsPath ?><?= modelVariable ?>()
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'new': function(req, res, next) {
+        var title = "New <?= modelName ?>";
+        var <?= modelVariable ?> = new <?= modelName ?>(req.query);
+        switch (format.toString()) {
+             case 'xml':
+                 res.xml(201, { root : { item : <?= modelVariable ?>.toObject() } });
+                 break;
+             default:
+                 res.json(201, { item : <?= modelVariable ?>.toObject() });
+        }
+    },
+
+    /**
+     * Create action, creates a single item and redirects to Show or returns the object as json
+     * Default mapping to POST '<?= namespace ?>/<?= basePathPlural ?>', no GET mapping
+     * View Helper method pathTo.create_<?= nsPath ?><?= modelVariable ?>()
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'create': function(req, res, next){
+        var format = req.params.format || '';
+        Tools.validateFields(<?= modelName ?>, req.body, {
+             validate: true
+        }, function (err, filtered) {
+             if (err) {
+                 res.message(format, 'error', 'Could not create user: ' + err.join(', \n'), 'not_created', 500);
+                 return;
+             }
+             var <?= modelVariable ?> = new <?= modelName ?>(filtered);
+             <?= modelVariable ?>.save(function(err) {
+                 if (err) {
+                      res.message(format, 'error', 'Could not create <?= modelVariable ?>: ' + err, 'not_created', 500);
+                      return;
+                 }
+                 switch (format.toString()) {
+                      case 'xml':
+                          res.xml(201, { root : { item : <?= modelVariable ?>.toObject() } });
+                          break;
+                      default:
+                          res.json(201, { item : <?= modelVariable ?>.toObject() });
+                 }
+             });
+        });
+    },
+    
+    /**
+     * Show action, returns shows a single item via <?= addView ?>views/<?= basePathPlural ?>/show.ejs view or via json
+     * Default mapping to GET '<?= namespace ?>/<?= basePath ?>/:id'
+     * For XML use '<?= namespace ?>/<?= basePath ?>/:id.xml'
+     * View Helper method pathTo.show_<?= nsPath ?><?= modelVariable ?>(instance)
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'show': function(req, res, next) {
+        var title = "Show <?= modelName ?>";
+        var format = req.params.format || '';
+        <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
+              if(err) {
+                   return next(err);
+              }
+              if(<?= modelVariable ?>) {
+                   switch (format.toString()) {
+                           case 'xml':
+                               res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
+                               break;
+                           default:
+                               res.json(200, { item : <?= modelVariable ?>.toObject() });
+                   }
+              } else {
+                   res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
+              }
+        });
+    },
+
+    /**
+     * Update action, updates a single item and redirects to Show or returns the object as json
+     * Default mapping to PUT '<?= namespace ?>/<?= basePath ?>/:id', no GET mapping
+     * View Helper method pathTo.update_<?= nsPath ?><?= modelVariable ?>(id)
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'update': function(req, res, next) {
+        var format = req.params.format || '';
+        <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
+            if(<?= modelVariable ?>) {
+                Tools.validateFields(<?= modelName ?>, req.body, {
+                     validate: true
+                }, function (err, filtered) {
+                   if (err) {
+                       console.log(err);
+                       res.message(format, 'error', 'Could not update <?= modelVariable ?>: ' + err.join(', \n'), 'not_updated', 500);
+                       return;
+                   }
+                   <?= modelVariable ?>.updateAttributes(filtered, function(err) {
+                       if (err) {
+                           console.log(err);
+                           res.message(format, 'error', 'Could not update <?= modelVariable ?>: ' + err, 'not_updated', 500);
+                           return;
+                       }
+                       switch (format.toString()) {
+                           case 'xml':
+                                res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
+                              break;
+                           default:
+                                res.json(200, { item : <?= modelVariable ?>.toObject() });
+                       }
+                   });
+               });
+            } else {
+                res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
+            }
+        });
+    },
+
+    /**
+     * Delete action, deletes a single item and redirects to index
+     * Default mapping to DEL '<?= namespace ?>/<?= basePath ?>/:id', no GET mapping
+     * View Helper method pathTo.destroy_<?= nsPath ?><?= modelVariable ?>(instance)
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'destroy': function(req, res, next){
+        var format = req.params.format || '';
+        <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
+             if (!<?= modelVariable ?>) {
+                   res.message(format, 'error', 'Unable to locate the <?= modelVariable ?> to delete!', 'not_found', 404);
+                   return false;
+             };
+
+             <?= modelVariable ?>.destroy(function(err) {
+                   if(err) {
+                      res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
+                   } else {
+                      res.message(format, 'success', '<?= modelVariable ?> deleted!', 'item_deleted', 200);
+                   }
+             });
+        });
+    },
+
+    /**
+     * Delete action, deletes a all items and redirects to index
+     * Default mapping to DEL '<?= namespace ?>/<?= basePathPlural ?>', no GET mapping
+     * View Helper method pathTo.destroy_<?= nsPath ?><?= basePathPlural ?>()
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'destroyall': function(req, res, next){
+        var format = req.params.format || '';
+        <?= modelName ?>.destroyAll(function(err) {
+             if(err) {
+                 res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
+             } else {
+                 res.message(format, 'success', '<?= controllerName ?> deleted!', 'all_deleted', 200);
+             }
+        });
+    }
+};

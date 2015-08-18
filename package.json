@@ -1,0 +1,70 @@
+{
+  "name": "trinte-creator",
+  "description": "TrinteJS script creator",
+  "keywords": [
+    "script",
+    "creator",
+    "ejs",
+    "trinte",
+    "trintejs",
+    "caminte",
+    "script"
+  ],
+  "homepage": "http://www.trintejs.com/",
+  "version": "0.0.25",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/biggora/trinte-creator/blob/master/LICENSE"
+    }
+  ],
+  "author": {
+    "name": "Alexey Gordeyev",
+    "email": "aleksej@gordejev.lv",
+    "url": "https://github.com/biggora/"
+  },
+  "contributors": [
+    {
+      "name": "Alexey Gordeyev",
+      "email": "aleksej@gordejev.lv",
+      "url": "https://github.com/biggora/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/biggora/trinte-creator.git"
+  },
+  "bugs": {
+    "url": "http://github.com/biggora/trinte-creator/issues",
+    "email": "aleksej@gordejev.lv"
+  },
+  "main": "./index.js",
+  "scripts": {
+    "test": "nodeunit tests/test.js"
+  },
+  "directories": {
+    "app": "app",
+    "lib": "lib",
+    "scripts": "scripts",
+    "test": "test"
+  },
+  "dependencies": {
+    "trinte": "latest",
+    "trinte-themes": "latest",
+    "trinte-ejs": "latest",
+    "ejs": ">=2.0.0",
+    "wrench": "1.x.x",
+    "colors": "0.x.x"
+  },
+  "devDependencies": {
+    "express": ">=4.0.0",
+    "mocha": "*",
+    "should": "*",
+    "sinon": "*",
+    "cucumber": "*"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": ">=0.10"
+  }
+}

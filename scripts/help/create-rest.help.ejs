@@ -1,0 +1,28 @@
+
+  Trinte Creator v<?- version ?> This is the help for generate rest.
+  ==================================================================
+ 
+  Usage: trinte -g rest <[namespace]modelName> [option(s)] [field(s)]
+
+  Options:  
+  
+    [namespace]     Generate rest with namspace
+    [modelName]     The name (case sensitive) for the rest you want to create.
+    force           force on exists rest
+    [field]         Space separated fields list (fieldName:*fieldType).
+                    Following are all valid field types:
+                    String, Number, Date, Text, Boolean, Int     
+  
+  Examples:
+  
+    # create rest Comment without fields
+    $ trinte -g rest Comment
+    
+    # create rest Post with fields
+    $ trinte -g rest Post active:bool name:string content:text created:date
+
+    # create rest User with namespace and fields
+    $ trinte -g rest admin#User active:bool name:string pass:text created:date
+    
+    # override exiting rest Post with fields
+    $ trinte -g rest Post force active:bool name:string desc:text created:date

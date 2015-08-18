@@ -1,0 +1,24 @@
+/**
+ *  Default session manager
+ *  Inject app and express reference
+ *
+ *  Created by trinte-creator script
+ *  App based on TrinteJS MVC framework
+ *  TrinteJS homepage http://www.trintejs.com
+ **/
+ 
+var expressSession = require('express-session');
+var config = require('./configuration');
+
+module.exports = function (app,express) {
+        app.use(expressSession({
+            cookie: {
+                maxAge: config.session.maxAge
+            },
+            key: config.session.key,
+            secret: config.session.secret,
+            proxy: true,
+            resave: true,
+            saveUninitialized: true
+        }));
+};

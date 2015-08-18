@@ -1,0 +1,24 @@
+
+  Trinte Creator v<?- version ?> This is the help for generate model.
+  ==================================================================
+ 
+  Usage: trinte -g model <modelName> [option(s)] [field(s)]
+
+  Options:  
+  
+    [modelName]     The name (case sensitive) for the model you want to create.
+    force           force on exists model
+    [field]         Space separated fields list (fieldName:*fieldType).
+                    Following are all valid field types:
+                    String, Number, Date, Text, Boolean, Int     
+  
+  Examples:
+  
+    # create model Post without fields
+    $ trinte -g model Post
+    
+    # create model Post with fields
+    $ trinte -g model Post active:bool name:string desc:text created:date
+    
+    # override exiting model Post with fields
+    $ trinte -g model Post force active:bool name:string desc:text created:date

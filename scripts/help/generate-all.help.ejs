@@ -1,0 +1,28 @@
+
+  Trinte Creator v<?- version ?> This is the help for generate crud.
+  ==================================================================
+ 
+  Usage: trinte -g crud <[namespace]modelName> [option(s)] [field(s)]
+
+  Options:  
+  
+    [namespace]     Generate scafold with namspace
+    [modelName]     The name (case sensitive) for the scafold you want to create.
+    force           force on exists scafold
+    [field]         Space separated fields list (fieldName:*fieldType).
+                    Following are all valid field types:
+                    String, Number, Date, Text, Boolean, Int     
+  
+  Examples:
+  
+    # create scafold Comment without fields
+    $ trinte -g crud Comment
+    
+    # create scafold Post with fields
+    $ trinte -g crud Post active:bool name:string content:text created:date
+
+    # create scafold User with namespace and fields
+    $ trinte -g crud admin#User active:bool name:string pass:text created:date
+    
+    # override exiting scafold Post with fields
+    $ trinte -g crud Post force active:bool name:string desc:text created:date

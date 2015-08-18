@@ -1,0 +1,36 @@
+/**
+ *  Default database configuration file
+ *
+ *  Created by trinte-creator script
+ *  App based on TrinteJS MVC framework
+ *  TrinteJS homepage http://www.trintejs.com
+ **/
+
+module.exports.production = {
+    driver     : '<?= driver ?>',
+    <? if(host != '')  { ?>host       : '<?= host ?>',<? } ?>
+    <? if(port != '')  { ?>port       : '<?= port ?>',<? } ?>
+    <? if(username != '')  { ?>username   : '<?= username ?>',<? } ?>
+    <? if(password != '')  { ?>password   : '<?= password ?>',<? } ?>
+    <? if(database != '')  { ?>database   : '<?= database ?>'<? } ?>
+};
+
+module.exports.development = {
+    driver     : '<?= driver ?>',
+    <? if(host != '')  { ?>host       : '<?= host ?>',<? } ?>
+    <? if(port != '')  { ?>port       : '<?= port ?>',<? } ?>
+    <? if(username != '')  { ?>username   : '<?= username ?>',<? } ?>
+    <? if(password != '')  { ?>password   : '<?= password ?>',<? } ?>
+    <? if(database != '')  { ?>database   : '<?= database ?>'<? } ?>
+};
+
+module.exports.test = {
+    driver     : '<?= driver ?>',
+    <? if(host != '')  { ?>host       : '<?= host ?>',<? } ?>
+    <? if(port != '')  { ?>port       : '<?= port ?>',<? } ?>
+    <? if(username != '')  { ?>username   : '<?= username ?>',<? } ?>
+    <? if(password != '')  { ?>password   : '<?= password ?>',<? } ?>
+    <? if(database != '')  { ?>database   : '<?= database ?>'<? } ?>
+};
+
+module.exports.dev = module.exports.development;

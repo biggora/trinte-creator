@@ -1,0 +1,24 @@
+/**
+*  <?= modelName ?> Integration Test
+*  Created by create-test script @<?= new Date().toISOString() ?>
+**/
+<?
+var modelVariable = modelName.toLowerCase();
+var basePath = modelName.toLowerCase();
+var basePathPlural = controllerName.toLowerCase();
+var nsPath = namespace && namespace !== "" ? "/" + namespace + "/" : "/";
+?>
+var assert = require('assert');
+var should = require('should');
+var app = require('./test/app');
+var id, <?= modelVariable ?>;
+
+describe('Model <?= modelName ?>:', function () {
+
+     before(function () {
+         app.boot();
+     });
+
+
+
+});

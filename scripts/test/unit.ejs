@@ -1,0 +1,63 @@
+<?
+	var modelVariable = modelName.toLowerCase();
+	var basePath = modelName.toLowerCase();
+	var basePathPlural = controllerName.toLowerCase();
+?>
+/**
+ *  <?= controllerName ?> Unit Test
+ *  Created by create-test script @ <?= new Date() ?>
+ **/
+
+var should = require('should');
+var caminte = require('caminte');
+var example = require('../app/models/<?= modelName ?>');
+var Schema = caminte.Schema;
+var SchemaType = mongoose.SchemaType;
+var ValidatorError = SchemaType.ValidatorError;
+var DocumentObjectId = mongoose.Types.ObjectId;
+var MongooseError = mongoose.Error;
+
+/**
+ * Simple expresso tests for the <?= modelName ?> model
+ */
+module.exports = {
+
+  'Test that a model can be created': function(){
+	    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
+	    var model = new <?= modelName ?>();
+	    model.isNew.should.be.true;
+   },
+  'Test that the model is an instance of a caminte schema': function(){
+    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
+    <?= modelName ?>.schema.should.be.an.instanceof(Schema);
+    <?= modelName ?>.prototype.schema.should.be.an.instanceof(Schema);
+  },
+  'Test that an <?= modelName ?> has all of the default fields and values': function(){
+
+    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
+
+    var model = new <?= modelName ?>();
+    model.isNew.should.be.true;
+
+    model.get('_id').should.be.an.instanceof(DocumentObjectId);
+    should.equal(undefined, model.get('name'));
+
+   },
+  'Test that saving a record with invalid fields returns a validation error': function(){
+
+	    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
+	    var model = new <?= modelName ?>();
+	    model.set('name', '');
+	    model.save(function(err){
+
+	      err.should.be.an.instanceof(MongooseError);
+	      err.should.be.an.instanceof(ValidatorError);
+
+	      model.set('name', 'I exist!');
+	      model.save(function(err){
+	        should.strictEqual(err, null);
+	      });
+
+	    });
+  }
+};
