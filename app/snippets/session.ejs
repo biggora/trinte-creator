@@ -6,11 +6,15 @@
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
  **/
- 
 var expressSession = require('express-session');
 var config = require('./configuration');
 
-module.exports = function (app,express) {
+/**
+ * Define sessionStore
+ * @param {Object} app
+ * @param {Object} express
+ **/
+module.exports = function (app, express) {
         app.use(expressSession({
             cookie: {
                 maxAge: config.session.maxAge

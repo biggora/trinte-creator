@@ -7,6 +7,9 @@
  *  TrinteJS homepage http://www.trintejs.com
  **/
 
+/**
+ * Define addProductToCart
+ **/
 exports.addProductToCart = function addProductToCart() {
     return function(req, res, next) {
         var newProduct = req.body.product;
@@ -48,6 +51,9 @@ exports.addProductToCart = function addProductToCart() {
     };
 };
 
+/**
+ * Define getProductFromCart
+ **/
 exports.getProductFromCart = function getProductFromCart() {
     return function(req, res, next) {
         if (!req.session) {

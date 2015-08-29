@@ -5,12 +5,16 @@
  *  Created by trinte-creator script
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
+ *
+ *  docs: https://github.com/biggora/trinte/wiki/Routes
  **/
 {ADDONSINC}
+
 /**
  * Define routes
  * @param {Object} map
- */
+ * @param {Object} app
+ **/
 module.exports = function routes(map, app) {
        map.root("apps#index");
        map.get("/login","apps#login");

@@ -4,33 +4,38 @@
  *  Created by trinte-creator script
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
+ *
+ *  docs: https://github.com/biggora/caminte/wiki/Connecting-to-DB#connecting
  **/
 
 module.exports.production = {
     driver     : '<?= driver ?>',
-    <? if(host != '')  { ?>host       : '<?= host ?>',<? } ?>
-    <? if(port != '')  { ?>port       : '<?= port ?>',<? } ?>
-    <? if(username != '')  { ?>username   : '<?= username ?>',<? } ?>
-    <? if(password != '')  { ?>password   : '<?= password ?>',<? } ?>
-    <? if(database != '')  { ?>database   : '<?= database ?>'<? } ?>
+    <? if(host != '')  { ?>host       : '<?= host ?>',<? } else { ?>// host       : '127.0.0.1',<? } ?>
+    <? if(port != '')  { ?>port       : '<?= port ?>',<? } else { ?>// port       : '3306',<? } ?>
+    <? if(username != '')  { ?>username   : '<?= username ?>',<? } else { ?>// username   : 'test',<? } ?>
+    <? if(password != '')  { ?>password   : '<?= password ?>',<? } else { ?>// password   : 'test',<? } ?>
+    <? if(database != '')  { ?>database   : '<?= database ?>',<? } else { ?>// database   : 'test',<? } ?>
+    autoReconnect : true
 };
 
 module.exports.development = {
     driver     : '<?= driver ?>',
-    <? if(host != '')  { ?>host       : '<?= host ?>',<? } ?>
-    <? if(port != '')  { ?>port       : '<?= port ?>',<? } ?>
-    <? if(username != '')  { ?>username   : '<?= username ?>',<? } ?>
-    <? if(password != '')  { ?>password   : '<?= password ?>',<? } ?>
-    <? if(database != '')  { ?>database   : '<?= database ?>'<? } ?>
+    <? if(host != '')  { ?>host       : '<?= host ?>',<? } else { ?>// host       : '127.0.0.1',<? } ?>
+    <? if(port != '')  { ?>port       : '<?= port ?>',<? } else { ?>// port       : '3306',<? } ?>
+    <? if(username != '')  { ?>username   : '<?= username ?>',<? } else { ?>// username   : 'test',<? } ?>
+    <? if(password != '')  { ?>password   : '<?= password ?>',<? } else { ?>// password   : 'test',<? } ?>
+    <? if(database != '')  { ?>database   : '<?= database ?>',<? } else { ?>// database   : 'test',<? } ?>
+    autoReconnect : true
 };
 
 module.exports.test = {
     driver     : '<?= driver ?>',
-    <? if(host != '')  { ?>host       : '<?= host ?>',<? } ?>
-    <? if(port != '')  { ?>port       : '<?= port ?>',<? } ?>
-    <? if(username != '')  { ?>username   : '<?= username ?>',<? } ?>
-    <? if(password != '')  { ?>password   : '<?= password ?>',<? } ?>
-    <? if(database != '')  { ?>database   : '<?= database ?>'<? } ?>
+    <? if(host != '')  { ?>host       : '<?= host ?>',<? } else { ?>// host       : '127.0.0.1',<? } ?>
+    <? if(port != '')  { ?>port       : '<?= port ?>',<? } else { ?>// port       : '3306',<? } ?>
+    <? if(username != '')  { ?>username   : '<?= username ?>',<? } else { ?>// username   : 'test',<? } ?>
+    <? if(password != '')  { ?>password   : '<?= password ?>',<? } else { ?>// password   : 'test',<? } ?>
+    <? if(database != '')  { ?>database   : '<?= database ?>',<? } else { ?>// database   : 'test',<? } ?>
+    autoReconnect : true
 };
 
 module.exports.dev = module.exports.development;

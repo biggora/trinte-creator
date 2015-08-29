@@ -6,6 +6,7 @@
  *  @desc        <?= description ?>
  *  @author      <?= author ?>
  *  @created     <?= created ?>
+ *  @link        https://github.com/biggora/caminte/wiki
  *
  *  Created by create-model script
  *  App based on TrinteJS MVC framework
@@ -13,15 +14,15 @@
  **/
 
 /**
- *  Define  <?= name ?> Model
+ *  Define  <?- name ?> Model
  *  @param  {Object}    schema
  *  @return {Object}
  *
  *  @link   https://github.com/biggora/caminte/wiki/Defining-a-Model
  **/
 module.exports = function(schema){
-    var <?= name ?> = schema.define('<?= name.toLowerCase() ?>', {
-<?= fields ?>
+    var <?- name ?> = schema.define('<?= name.toLowerCase() ?>', {
+<?- fields ?>
     });
-    return <?= name ?>;
+    return <?- name ?>;
 };

@@ -28,6 +28,11 @@ var defaultMessage = {
     attachments: []
 };
 
+/**
+ * Define createTransport
+ * @param {Object} transport
+ * @param {Object} mailConfig
+ **/
 exports.createTransport = function createTransport(transport, mailConfig) {
     transport = transport ? transport : mailConf.transport;
     mailConfig = mailConfig ? mailConfig : mailConf.config;
@@ -35,6 +40,12 @@ exports.createTransport = function createTransport(transport, mailConfig) {
     return nodemailer.createTransport(transport, mailConfig);
 };
 
+/**
+ * Define sendMail
+ * @param {Object} message
+ * @param {Function} callback
+ * @param {Object} transport
+ **/
 exports.sendMail = function sendMail(message, callback, transport) {
     var close = transport ? false : true;
     transport = transport ? transport : exports.createTransport();
@@ -50,6 +61,9 @@ exports.sendMail = function sendMail(message, callback, transport) {
     });
 };
 
+/**
+ * Define mailSender
+ **/
 exports.mailSender = function mailSender() {
     return function(req, res, next) {
         var recMessage = req.body.message, message;

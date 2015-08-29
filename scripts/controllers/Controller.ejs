@@ -138,7 +138,7 @@ module.exports = {
      * @param {Function} next
      **/
     'new': function(req, res, next) {
-        var title = "New <?= modelName ?>";
+        var title = "New <?- modelName ?>";
         var <?= modelVariable ?> = new <?= modelName ?>(req.query);
         res.render(ViewTemplatePath + "/new",{
               <?= modelVariable ?>:<?= modelVariable ?>,

@@ -20,9 +20,9 @@
   var addView = namespace && namespace !== "" ? namespace + "/" : "" ;
   var nsPath = namespace && namespace !== "" ? namespace + "_" : "" ;
 ?>
-var pager = require('<?= addIncl ?>../lib/pager.js'),
-ViewTemplatePath = '<?= addView ?><?= basePathPlural ?>';
+var pager = require('<?- addIncl ?>../lib/pager.js'),
+ViewTemplatePath = '<?- addView ?><?- basePathPlural ?>';
 
 module.exports = {
-<?= fields ?>
+<?- fields ?>
 };

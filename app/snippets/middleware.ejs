@@ -6,11 +6,15 @@
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
  **/
-
 var useragent = require('express-useragent');
 var csrf = require('csurf');
 
-module.exports = function(app, express) {
+/**
+ * Define middleware
+ * @param {Object} app
+ * @param {Object} express
+ **/
+module.exports = function middleware(app, express) {
     app.use(csrf());
     app.use(useragent.express());
 };

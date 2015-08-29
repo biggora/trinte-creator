@@ -27,9 +27,9 @@ module.exports = {
 
         fs.readdir(__dirname + '/', function(err, files) {
 
-            if (err)
+            if (err) {
                 throw err;
-
+            }
             files.forEach(function(file) {
                 if(/\.js$/i.test(file)) {
                    if (file !== "AppsController.js") {

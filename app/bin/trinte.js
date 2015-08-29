@@ -14,7 +14,8 @@ var config = require('../config/configuration');
 var database = require('../config/database');
 var middleware = require('../config/middleware');
 var session = require('../config/session');
-var Resource = require('./router').Resource;
+var Trouter = require('./router');
+var Resource = Trouter.Resource;
 var locales = require('./locales');
 var util = require('util');
 var utils = require('./utils');
@@ -50,7 +51,8 @@ function bootModel(trinte, schema, file) {
  * @param {TrinteJS} trinte - trinte app descriptor.
  */
 function bootModels(trinte) {
-    var Schema = require('caminte').Schema;
+    var caminte = require('caminte');
+    var Schema = caminte.Schema;
     var db = database[process.env.NODE_ENV || 'dev'];
     var schema = new Schema(db.driver, db);
     var modelsDir = path.resolve(__dirname, '../app/models');
@@ -139,14 +141,26 @@ function configureApp(trinte, callback) {
         }
     }));
     // Accepts json response
-    app.use(function(req, res, next){
-        if(req.accepts('json') !== undefined) {
+    app.use(function (req, res, next) {
+        if (req.accepts('json') !== undefined) {
             req.params.format = 'json';
         }
         next();
     });
     app.use(cookieParser(config.session.secret));
     session(app, express);
+    // Accepts json response
+    app.use(function (req, res, next) {
+        if (req.query.language !== undefined || req.query.lang !== undefined) {
+            if (req.session) {
+                req.session.language = req.query.language || req.query.lang;
+            }
+        }
+        if (req.session && !req.session.language) {
+            req.session.language = config.language;
+        }
+        next();
+    });
     // Before router to enable dynamic routing
     app.use(express.static(root + '/public'));
     // Setup ejs views as default, with .ejs as the extension
@@ -230,7 +244,7 @@ exports.init = function init(app, root) {
 
     trinte.on('models_loaded', function () {
         configureApp(trinte, function () {
-            require('../app/helpers/ModelsHelper');
+            var ModelsHelper = require('../app/helpers/ModelsHelper');
             var ApplicationHelper = require('../app/helpers/ApplicationHelper');
             for (var key in ApplicationHelper) {
                 global[key] = ApplicationHelper[key];
@@ -260,9 +274,11 @@ exports.init = function init(app, root) {
 
     trinte.on('locales_loaded', function () {
         // Initialize app routes
-        require('../config/routes')(map, app);
+        var routes = require('../config/routes');
+        routes(map, app);
         // Initialize errors routes
-        require(root + '/config/errors')(app);
+        var errors = require(root + '/config/errors');
+        errors(app);
         trinte.emit('routes_loaded');
         if (config.debug) {
             console.log('routes_loaded');

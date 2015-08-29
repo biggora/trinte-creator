@@ -6,13 +6,17 @@
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
  **/
-
 var config = require('./configuration');
 var expressSession = require('express-session');
 var CaminteStore = require('connect-caminte');
 var database = require('./database' )[process.env.NODE_ENV || 'dev'];
 
-module.exports = function (app,express) {
+/**
+ * Define sessionStore
+ * @param {Object} app
+ * @param {Object} express
+ **/
+module.exports = function (app, express) {
     var sessionStore = CaminteStore(expressSession);
     app.use(expressSession({
          cookie: {
