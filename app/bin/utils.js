@@ -3,7 +3,8 @@
  */
 var XML = require('./xml');
 var util = require('util');
-var mime = require('connect').mime;
+var connect = require('connect');
+var mime = connect.mime;
 
 /**
  * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
@@ -369,7 +370,7 @@ exports.add = function (router, param, regex) {
     return router.param(param, function (req, res, next, val) {
         var captures = regex.exec(String(val));
         if (util.isArray(captures)) {
-            if (1 === captures.length) {
+            if (captures.length >= 1) {
                 captures = captures[0];
             }
             req.params[param] = captures;

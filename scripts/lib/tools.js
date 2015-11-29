@@ -182,6 +182,9 @@ module.exports = {
                         })
                     }
                 }
+                if(query[prop] instanceof RegExp) {
+                    dbQuery[prop] = query[prop];
+                }
             } else {
                 if (Object.prototype.hasOwnProperty.call(model, prop)) {
                     var sVal = self.forDB(query[prop], sType);

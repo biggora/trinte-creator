@@ -181,8 +181,7 @@ function configureApp(trinte, callback) {
     middleware(app, express);
 
     // Initialize routes params
-    var router = express.Router();
-    require(root + '/config/params')(utils, router);
+    require(root + '/config/params')(utils, app);
     callback(app);
 }
 
