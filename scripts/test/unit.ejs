@@ -1,63 +1,95 @@
-<?
-	var modelVariable = modelName.toLowerCase();
-	var basePath = modelName.toLowerCase();
-	var basePathPlural = controllerName.toLowerCase();
-?>
 /**
  *  <?= controllerName ?> Unit Test
- *  Created by create-test script @ <?= new Date() ?>
+ *  Created by create-test script @<?= new Date().toISOString() ?>
  **/
+<?
+var modelVariable = modelName.toLowerCase();
+var basePath = modelName.toLowerCase();
+var basePathPlural = controllerName.toLowerCase();
+var nsPath = namespace && namespace !== "" ? "/" + namespace + "/" : "/";
+?>
+if (!process.env.NODE_ENV) {
+	process.env.NODE_ENV = 'test';
+}
 
 var should = require('should');
 var caminte = require('caminte');
-var example = require('../app/models/<?= modelName ?>');
+var config = require('../../config/database');
+var dbConf = config[process.env.NODE_ENV];
+var <?= modelName ?>Model = require('../../app/models/<?= modelName ?>');
 var Schema = caminte.Schema;
-var SchemaType = mongoose.SchemaType;
-var ValidatorError = SchemaType.ValidatorError;
-var DocumentObjectId = mongoose.Types.ObjectId;
-var MongooseError = mongoose.Error;
+dbConf.host = process.env.DB_HOST || dbConf.host;
+var schema = new Schema(dbConf.driver, dbConf);
+var <?= modelName ?> = <?= modelName ?>Model(schema);
 
 /**
- * Simple expresso tests for the <?= modelName ?> model
+ * Simple tests for the Banner model
  */
-module.exports = {
+describe('Unit <?= modelName ?>:', function () {
+	'use strict';
+	var <?= basePath ?>, id;
 
-  'Test that a model can be created': function(){
-	    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
-	    var model = new <?= modelName ?>();
-	    model.isNew.should.be.true;
-   },
-  'Test that the model is an instance of a caminte schema': function(){
-    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
-    <?= modelName ?>.schema.should.be.an.instanceof(Schema);
-    <?= modelName ?>.prototype.schema.should.be.an.instanceof(Schema);
-  },
-  'Test that an <?= modelName ?> has all of the default fields and values': function(){
+	before(function (done) {
+		schema.autoupdate(function () {
+			'use strict';
+			done();
+		});
+	});
 
-    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
+	after(function (done) {
+		done();
+	});
 
-    var model = new <?= modelName ?>();
-    model.isNew.should.be.true;
+	describe('create unit', function () {
 
-    model.get('_id').should.be.an.instanceof(DocumentObjectId);
-    should.equal(undefined, model.get('name'));
+		<?= basePath ?> = new <?= modelName ?>();
+		it('<?= basePath ?> should be object', function () {
+			<?= basePath ?>.should.be.type('object');
+		});
 
-   },
-  'Test that saving a record with invalid fields returns a validation error': function(){
+		it('validate <?= basePath ?>', function (done) {
+			<?= basePath ?>.isValid(function (valid) {
+				valid.should.be.true;
+				if (!valid) console.log(<?= basePath ?>.errors);
+				done();
+			});
+		});
 
-	    var <?= modelName ?> = mongoose.model('<?= modelName ?>');
-	    var model = new <?= modelName ?>();
-	    model.set('name', '');
-	    model.save(function(err){
+	});
 
-	      err.should.be.an.instanceof(MongooseError);
-	      err.should.be.an.instanceof(ValidatorError);
+	describe('#save()', function () {
 
-	      model.set('name', 'I exist!');
-	      model.save(function(err){
-	        should.strictEqual(err, null);
-	      });
+		it('should be have #save', function () {
+			<?= basePath ?>.should.be.have.property('save');
+			<?= basePath ?>.save.should.be.type('function');
+		});
 
-	    });
-  }
-};
+		it('call save()', function (done) {
+			<?= basePath ?>.save(function (err) {
+				should.not.exist(err);
+				<?= basePath ?>.should.be.have.property('id');
+				<?= basePath ?>.id.should.not.eql(null);
+				id = <?= basePath ?>.id;
+				done();
+			});
+		});
+
+	});
+
+	describe('#destroy()', function () {
+
+		it('should be have #destroy', function () {
+			<?= basePath ?>.should.be.have.property('destroy');
+			<?= basePath ?>.destroy.should.be.type('function');
+		});
+
+		it('call destroy()', function (done) {
+			<?= basePath ?>.destroy(function (err) {
+				should.not.exist(err);
+				done();
+			});
+		});
+
+	});
+
+});

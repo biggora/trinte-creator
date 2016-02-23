@@ -1,5 +1,5 @@
 /**
-*  <?= modelName ?> Integration Test
+*  <?= modelName ?> Model Test
 *  Created by create-test script @<?= new Date().toISOString() ?>
 **/
 <?
@@ -8,17 +8,326 @@ var basePath = modelName.toLowerCase();
 var basePathPlural = controllerName.toLowerCase();
 var nsPath = namespace && namespace !== "" ? "/" + namespace + "/" : "/";
 ?>
-var assert = require('assert');
+
+if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = 'test';
+}
+
 var should = require('should');
-var app = require('./test/app');
-var id, <?= modelVariable ?>;
+var caminte = require('caminte');
+var config = require('../../config/database');
+var dbConf = config[process.env.NODE_ENV];
+var <?= modelName ?>Model = require('../../app/models/<?= modelName ?>');
+var Schema = caminte.Schema;
+dbConf.host = process.env.DB_HOST || dbConf.host;
+var schema = new Schema(dbConf.driver, dbConf);
+var <?= modelName ?> = <?= modelName ?>Model(schema);
 
 describe('Model <?= modelName ?>:', function () {
+    'use strict';
+    var id;
 
-     before(function () {
-         app.boot();
-     });
+    before(function (done) {
+        schema.autoupdate(function () {
+            'use strict';
+            done();
+        });
+    });
 
+    describe('properties methods:', function () {
 
+        it('#toString', function () {
+            <?= modelName ?>.should.be.have.property('toString');
+            <?= modelName ?>.toString.should.be.type('function');
+        });
 
+        it('#forEachProperty', function () {
+            <?= modelName ?>.should.be.have.property('forEachProperty');
+            <?= modelName ?>.forEachProperty.should.be.type('function');
+        });
+
+        it('#registerProperty', function () {
+            <?= modelName ?>.should.be.have.property('registerProperty');
+            <?= modelName ?>.registerProperty.should.be.type('function');
+        });
+
+    });
+
+    describe('scope methods:', function () {
+
+        it('#scope', function () {
+            <?= modelName ?>.should.be.have.property('scope');
+            <?= modelName ?>.scope.should.be.type('function');
+        });
+
+    });
+
+    describe('query methods:', function () {
+
+        it('#create', function () {
+            <?= modelName ?>.should.be.have.property('create');
+            <?= modelName ?>.create.should.be.type('function');
+        });
+
+        it('#exists', function () {
+            <?= modelName ?>.should.be.have.property('exists');
+            <?= modelName ?>.exists.should.be.type('function');
+        });
+
+        it('#count', function () {
+            <?= modelName ?>.should.be.have.property('count');
+            <?= modelName ?>.count.should.be.type('function');
+        });
+
+        it('#findOrCreate', function () {
+            <?= modelName ?>.should.be.have.property('findOrCreate');
+            <?= modelName ?>.findOrCreate.should.be.type('function');
+        });
+
+        it('#findById', function () {
+            <?= modelName ?>.should.be.have.property('findById');
+            <?= modelName ?>.findById.should.be.type('function');
+        });
+
+        it('#findOne', function () {
+            <?= modelName ?>.should.be.have.property('findOne');
+            <?= modelName ?>.findOne.should.be.type('function');
+        });
+
+        it('#find', function () {
+            <?= modelName ?>.should.be.have.property('find');
+            <?= modelName ?>.find.should.be.type('function');
+        });
+
+        it('#all', function () {
+            <?= modelName ?>.should.be.have.property('all');
+            <?= modelName ?>.all.should.be.type('function');
+        });
+
+        it('#run', function () {
+            <?= modelName ?>.should.be.have.property('run');
+            <?= modelName ?>.run.should.be.type('function');
+        });
+
+        it('#exec', function () {
+            <?= modelName ?>.should.be.have.property('exec');
+            <?= modelName ?>.exec.should.be.type('function');
+        });
+
+        it('#update', function () {
+            <?= modelName ?>.should.be.have.property('update');
+            <?= modelName ?>.update.should.be.type('function');
+        });
+
+        it('#updateOrCreate', function () {
+            <?= modelName ?>.should.be.have.property('updateOrCreate');
+            <?= modelName ?>.updateOrCreate.should.be.type('function');
+        });
+
+        it('#upsert', function () {
+            <?= modelName ?>.should.be.have.property('upsert');
+            <?= modelName ?>.upsert.should.be.type('function');
+        });
+
+        it('#destroyAll', function () {
+            <?= modelName ?>.should.be.have.property('destroyAll');
+            <?= modelName ?>.destroyAll.should.be.type('function');
+        });
+
+        it('#destroyById', function () {
+            <?= modelName ?>.should.be.have.property('destroyById');
+            <?= modelName ?>.destroyById.should.be.type('function');
+        });
+
+        it('#remove', function () {
+            <?= modelName ?>.should.be.have.property('remove');
+            <?= modelName ?>.remove.should.be.type('function');
+        });
+
+    });
+
+    describe('relations methods:', function () {
+        it('#hasMany', function () {
+            <?= modelName ?>.should.be.have.property('hasMany');
+            <?= modelName ?>.hasMany.should.be.type('function');
+        });
+        it('#belongsTo', function () {
+            <?= modelName ?>.should.be.have.property('belongsTo');
+            <?= modelName ?>.hasMany.should.be.type('function');
+        });
+    });
+
+    describe('validations methods:', function () {
+
+        it('#validate', function () {
+            <?= modelName ?>.should.be.have.property('validate');
+            <?= modelName ?>.validate.should.be.type('function');
+        });
+
+        it('#validatesPresenceOf', function () {
+            <?= modelName ?>.should.be.have.property('validatesPresenceOf');
+            <?= modelName ?>.validatesPresenceOf.should.be.type('function');
+        });
+
+        it('#validatesLengthOf', function () {
+            <?= modelName ?>.should.be.have.property('validatesLengthOf');
+            <?= modelName ?>.validatesLengthOf.should.be.type('function');
+        });
+
+        it('#validatesNumericalityOf', function () {
+            <?= modelName ?>.should.be.have.property('validatesNumericalityOf');
+            <?= modelName ?>.validatesNumericalityOf.should.be.type('function');
+        });
+
+        it('#validatesInclusionOf', function () {
+            <?= modelName ?>.should.be.have.property('validatesInclusionOf');
+            <?= modelName ?>.validatesInclusionOf.should.be.type('function');
+        });
+
+        it('#validatesInclusionOf', function () {
+            <?= modelName ?>.should.be.have.property('validatesInclusionOf');
+            <?= modelName ?>.validatesInclusionOf.should.be.type('function');
+        });
+
+        it('#validatesFormatOf', function () {
+            <?= modelName ?>.should.be.have.property('validatesFormatOf');
+            <?= modelName ?>.validatesFormatOf.should.be.type('function');
+        });
+
+        it('#validatesUniquenessOf', function () {
+            <?= modelName ?>.should.be.have.property('validatesUniquenessOf');
+            <?= modelName ?>.validatesUniquenessOf.should.be.type('function');
+        });
+
+        it('#validateAsync', function () {
+            <?= modelName ?>.should.be.have.property('validateAsync');
+            <?= modelName ?>.validateAsync.should.be.type('function');
+        });
+
+    });
+
+    describe('hook methods:', function () {
+
+        it('#afterInitialize', function () {
+            <?= modelName ?>.should.be.have.property('afterInitialize');
+            // <?= modelName ?>.afterInitialize.should.be.type('function');
+        });
+
+        it('#beforeValidation', function () {
+            <?= modelName ?>.should.be.have.property('beforeValidation');
+            // <?= modelName ?>.afterInitialize.should.be.type('function');
+        });
+
+        it('#afterValidation', function () {
+            <?= modelName ?>.should.be.have.property('afterValidation');
+        });
+
+        it('#beforeSave', function () {
+            <?= modelName ?>.should.be.have.property('beforeSave');
+        });
+
+        it('#afterSave', function () {
+            <?= modelName ?>.should.be.have.property('afterSave');
+        });
+
+        it('#beforeCreate', function () {
+            <?= modelName ?>.should.be.have.property('beforeCreate');
+        });
+
+        it('#afterCreate', function () {
+            <?= modelName ?>.should.be.have.property('afterCreate');
+        });
+
+        it('#beforeUpdate', function () {
+            <?= modelName ?>.should.be.have.property('beforeUpdate');
+        });
+
+        it('#afterUpdate', function () {
+            <?= modelName ?>.should.be.have.property('afterUpdate');
+        });
+
+        it('#beforeDestroy', function () {
+            <?= modelName ?>.should.be.have.property('beforeDestroy');
+        });
+
+        it('#afterDestroy', function () {
+            <?= modelName ?>.should.be.have.property('afterDestroy');
+        });
+    });
+
+    describe('model:', function () {
+        it('#create', function (done) {
+            <?= modelName ?>.create(function (err, created) {
+                should.not.exist(err);
+                created.should.be.have.property('id');
+                created.id.should.not.eql(null);
+                id = created.id;
+                done();
+            });
+        });
+
+        it('#exists', function (done) {
+            <?= modelName ?>.exists(id, function (err, exists) {
+                should.not.exist(err);
+                exists.should.be.true;
+                done();
+            });
+        });
+
+        it('#findById', function (done) {
+            <?= modelName ?>.findById(id, function (err, found) {
+                should.not.exist(err);
+                found.id.should.equal(id);
+                done();
+            });
+        });
+
+        it('#findOne', function (done) {
+            <?= modelName ?>.findOne({
+                where: {
+                    id: id
+                }
+            }, function (err, found) {
+                should.not.exist(err);
+                found.id.should.equal(id);
+                done();
+            });
+        });
+
+        it('#find', function (done) {
+            <?= modelName ?>.find({}, function (err, founds) {
+                should.not.exist(err);
+                founds.should.length(1);
+                done();
+            });
+        });
+
+        it('#all', function (done) {
+            <?= modelName ?>.all({}, function (err, founds) {
+                should.not.exist(err);
+                founds.should.length(1);
+                done();
+            });
+        });
+
+        it('#count', function (done) {
+            <?= modelName ?>.count({}, function (err, count) {
+                should.not.exist(err);
+                count.should.equal(1);
+                done();
+            });
+        });
+
+        it('#destroyById', function (done) {
+            <?= modelName ?>.destroyById(id, function (err) {
+                should.not.exist(err);
+                <?= modelName ?>.findById(id, function (err, found) {
+                    should.not.exist(err);
+                    should.not.exist(found);
+                    done();
+                });
+            });
+        });
+
+    });
 });
