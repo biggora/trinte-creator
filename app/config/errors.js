@@ -10,7 +10,7 @@
  **/
 
 module.exports = function (app) {
-
+    /* jshint unused: false */
     // Example 500 page
     app.use(function (err, req, res, next) {
         console.log('Internal Server Error: ' + err.message);

@@ -8,16 +8,16 @@
  **/
 var config = require('./configuration');
 var expressSession = require('express-session');
-var CaminteStore = require('connect-caminte');
+var caminteStore = require('connect-caminte');
 var database = require('./database' )[process.env.NODE_ENV || 'dev'];
 
 /**
- * Define sessionStore
+ * Define SessionStore
  * @param {Object} app
  * @param {Object} express
  **/
 module.exports = function (app, express) {
-    var sessionStore = CaminteStore(expressSession);
+    var SessionStore = caminteStore(expressSession);
     app.use(expressSession({
          cookie: {
              maxAge: config.session.maxAge
@@ -26,7 +26,7 @@ module.exports = function (app, express) {
          secret: config.session.secret,
          saveUninitialized: true,
          resave: true,
-         store: new sessionStore({
+         store: new SessionStore({
              driver: database.driver,
              collection: 'session',
              db: database,

@@ -15,14 +15,14 @@ var config = require('./configuration');
  * @param {Object} express
  **/
 module.exports = function (app, express) {
-        app.use(expressSession({
-            cookie: {
-                maxAge: config.session.maxAge
-            },
-            key: config.session.key,
-            secret: config.session.secret,
-            proxy: true,
-            resave: true,
-            saveUninitialized: true
-        }));
+   app.use(expressSession({
+      cookie: {
+         maxAge: config.session.maxAge
+      },
+      key: config.session.key,
+      secret: config.session.secret,
+      proxy: true,
+      resave: true,
+      saveUninitialized: true
+   }));
 };
