@@ -176,7 +176,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 });
         });
 
-        it('respond with json', function (done) {
+        it('respond with xml', function (done) {
             server
                 .get('/<?= basePathPlural ?>/' + user.id + '.xml')
                 .set('Accept', 'text/xml')
@@ -188,16 +188,52 @@ describe('Controller <?= controllerName ?>:', function () {
         });
 
      });
-/*
-     describe('#edit', function () {
 
+     describe('GET   /<?= basePathPlural ?>/edit/:id (#edit)', function () {
+
+        it('respond with html', function (done) {
+            server
+                .get('/<?= basePathPlural ?>/edit/' + user.id)
+                .set('Accept', 'text/html')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+
+        it('respond with json', function (done) {
+            server
+                .get('/<?= basePathPlural ?>/edit/' + user.id + '.json')
+                .set('Accept', 'application/json')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+
+        it('respond with xml', function (done) {
+            server
+                .get('/<?= basePathPlural ?>/edit/' + user.id + '.xml')
+                .set('Accept', 'text/xml')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+        
      });
-
+     
+/*
      describe('#update', function () {
 
      });
  */
-     describe('#destroy', function () {
+ 
+     describe('DEL   /<?= basePathPlural ?>/:id (#destroy)', function () {
+
         it('respond with jsonp', function (done) {
             server
                .delete('/<?= basePathPlural ?>/' + user.id)
@@ -208,9 +244,11 @@ describe('Controller <?= controllerName ?>:', function () {
                     done();
                });
         });
+
      });
 
-     describe('#destroyall', function () {
+     describe('DEL   /<?= basePathPlural ?> (#destroyall)', function () {
+
         it('respond with jsonp', function (done) {
             server
                 .delete('/<?= basePathPlural ?>')
@@ -221,6 +259,7 @@ describe('Controller <?= controllerName ?>:', function () {
                     done();
                 });
         });
+
      });
 
 });
