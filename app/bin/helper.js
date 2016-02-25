@@ -308,43 +308,46 @@ exports.init = function (utils) {
                 return head;
             },
             siteFeed: function (data) {
+                var head = '';
                 if (data && data.title) {
                     return '<!-- RSS Feed -->\n<link rel="alternate" type="application/rss+xml" title="' + data.title + '" href="' + data.link + '">';
                 }
-                return '';
+                return head;
             },
             siteFBHeaders: function (data) {
                 data = data ? data : {};
+                var head = '';
                 // <meta property="fb:admins" content="1234,1235" />
-                // <meta property="fb:app_id" content="your_app_id" /> 
+                // <meta property="fb:app_id" content="your_app_id" />
+                return head;
             },
             siteTWHeaders: function (data) {
                 data = data ? data : {};
+                var head = '';
                 // <meta name="twitter:site" content="@site">
                 // <meta name="twitter:title" content="">
                 // <meta name="twitter:card" content="summary">
                 // <meta name="twitter:description" content="">
+                return head;
             },
             siteDRHeaders: function (data) {
                 data = data ? data : {};
+                var head = '';
                 // <meta property="fb:admins" content="1234,1235" />
-                // <meta property="fb:app_id" content="your_app_id" /> 
+                // <meta property="fb:app_id" content="your_app_id" />
+                return head;
             },
             siteHeaders: function (data) {
                 data = data ? data : {};
-                var self = this;
-                var headers = '';
+                var self = this, headers = '';
                 headers += self.siteFeed(data.feed);
                 headers += self.siteIcons(data.icons);
                 headers += self.openGraph(data.openGraph);
-                headers += self.siteFBHeaders(data.facebook);
-                headers += self.siteTWHeaders(data.twitter);
-                headers += self.siteDRHeaders(data.draugiem);
+                headers += self.siteFBHeaders(data.facebook || {});
+                headers += self.siteTWHeaders(data.twitter || {});
+                headers += self.siteDRHeaders(data.draugiem || {});
                 return headers;
             },
-            /*
-             * Recursively merge properties of two objects 
-             */
             mergeRecursive: function (trg, src) {
                 var self = this;
                 for (var p in src) {
