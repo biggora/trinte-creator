@@ -35,7 +35,7 @@ describe('Controller <?= controllerName ?>:', function () {
         done();
     });
 
-    describe('GET /<?= basePathPlural ?> (#index)', function () {
+    describe('GET   /<?= basePathPlural ?> (#index)', function () {
 
         it('respond with html', function (done) {
             server
@@ -62,7 +62,7 @@ describe('Controller <?= controllerName ?>:', function () {
 
     });
 
-    describe('GET /<?= basePathPlural ?>/new (#new)', function () {
+    describe('GET   /<?= basePathPlural ?>/new (#new)', function () {
 
         it('respond with html', function (done) {
             server
@@ -151,19 +151,44 @@ describe('Controller <?= controllerName ?>:', function () {
                 });
         });
     });
-    /*
-     describe('#show', function () {
-     request(app)
-     .get('/categories')
-     .set('Accept', 'application/json')
-     .expect(200)
-     .end(function (err, res) {
-     if (err) return done(err);
 
-     done();
-     });
-     });
+     describe('GET   /<?= basePathPlural ?>/:id (#show)', function () {
 
+        it('respond with html', function (done) {
+            server
+                .get('/<?= basePathPlural ?>/' + user.id)
+                .set('Accept', 'text/html')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+
+        it('respond with json', function (done) {
+            server
+                .get('/<?= basePathPlural ?>/' + user.id + '.json')
+                .set('Accept', 'application/json')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+
+        it('respond with json', function (done) {
+            server
+                .get('/<?= basePathPlural ?>/' + user.id + '.xml')
+                .set('Accept', 'text/xml')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+
+     });
+/*
      describe('#edit', function () {
 
      });
@@ -171,13 +196,31 @@ describe('Controller <?= controllerName ?>:', function () {
      describe('#update', function () {
 
      });
-
+ */
      describe('#destroy', function () {
-
+        it('respond with jsonp', function (done) {
+            server
+               .delete('/<?= basePathPlural ?>/' + user.id)
+               .set('Accept', 'application/json')
+               .expect(200)
+               .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+               });
+        });
      });
 
      describe('#destroyall', function () {
-
+        it('respond with jsonp', function (done) {
+            server
+                .delete('/<?= basePathPlural ?>')
+                .set('Accept', 'application/json')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
      });
-     */
+
 });
