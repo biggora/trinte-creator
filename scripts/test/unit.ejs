@@ -8,9 +8,6 @@ var basePath = modelName.toLowerCase();
 var basePathPlural = controllerName.toLowerCase();
 var nsPath = namespace && namespace !== "" ? "/" + namespace + "/" : "/";
 ?>
-if (!process.env.NODE_ENV) {
-	process.env.NODE_ENV = 'test';
-}
 
 var should = require('should');
 var caminte = require('caminte');

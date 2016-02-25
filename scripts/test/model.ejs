@@ -9,10 +9,6 @@ var basePathPlural = controllerName.toLowerCase();
 var nsPath = namespace && namespace !== "" ? "/" + namespace + "/" : "/";
 ?>
 
-if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = 'test';
-}
-
 var should = require('should');
 var caminte = require('caminte');
 var config = require('../../config/database');

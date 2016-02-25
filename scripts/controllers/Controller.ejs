@@ -141,14 +141,24 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'new': function(req, res, next) {
+    'new': function(req, res) {
         var t = res.locals.t;
         var title = t('<?= basePathPlural ?>.title.new','New <?- modelName ?>');
+        var format = req.params.format || '';
         var <?= modelVariable ?> = new <?= modelName ?>(req.query);
-        res.render(ViewTemplatePath + '/new',{
-              <?= modelVariable ?>:<?= modelVariable ?>,
-              title : title
-        });
+        switch (format.toString()) {
+            case 'json':
+                res.json(<?= modelVariable ?>.toObject());
+                break;
+            case 'xml':
+                res.xml({ root : { item : <?= modelVariable ?>.toObject() } });
+                break;
+            default:
+                res.render(ViewTemplatePath + '/new',{
+                    <?= modelVariable ?> : <?= modelVariable ?>,
+                    title : title
+                });
+        }
     },
 
     /**
@@ -159,7 +169,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'create': function(req, res, next){
+    'create': function(req, res){
         var format = req.params.format || '';
         var action = req.body._action || 'save';
         Tools.validateFields(<?= modelName ?>, req.body.<?= modelVariable ?>, {
@@ -297,7 +307,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'update': function(req, res, next) {
+    'update': function(req, res) {
         var format = req.params.format || '';
         var action = req.body._action || 'save';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
@@ -356,7 +366,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'destroy': function(req, res, next){
+    'destroy': function(req, res){
          var returnTo = (req.session || {} ).returnTo || pathTo.<?= nsPath ?><?= basePathPlural ?>();
          <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
                 if (!<?= modelVariable ?>) {
@@ -384,7 +394,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'destroyall': function(req, res, next){
+    'destroyall': function(req, res){
         var returnTo = (req.session || {} ).returnTo || pathTo.<?= nsPath ?><?= basePathPlural ?>();
         <?= modelName ?>.destroyAll(function(err) {
             if(err) {

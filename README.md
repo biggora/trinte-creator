@@ -1,11 +1,52 @@
 [![NPM version](https://badge.fury.io/js/trinte-creator.png)](http://badge.fury.io/js/trinte-creator)
 ## Script Creation module
 
-Script creator for TrinteJS Javascript MVC Framework. 
+Script creator for [TrinteJS](https://github.com/biggora/trinte) Javascript MVC Framework.
+TrinteJS is a MVC boilerplate for ExpressJS backed by [CaminteJS ORM](https://github.com/biggora/caminte) and Bootstrap.
 
 ### Installation
 
-    npm install trinte-creator
+    npm install trinte -g
+    
+### Get started!
+
+      $ trinte -i HelloWorld --sess   # Create application
+      $ cd HelloWorld && npm install  # intall dependencies
+
+      # generate scaffold
+      $ trinte -g crud User active:bool name email password about:text created:date
+
+  - Browse your application to [http://localhost:3000](http://localhost:3000)
+
+Full params list [here](https://github.com/biggora/trinte/wiki/Create-App)
+
+### Table of contents
+* [Get started!](#create-app)
+* [Usage overview](https://github.com/biggora/trinte/wiki/Command-format)
+  * [Command format](https://github.com/biggora/trinte/wiki/Command-format)
+  * [Create and initialize app](https://github.com/biggora/trinte/wiki/Create-App)
+  * [Creates a Scaffold](https://github.com/biggora/trinte/wiki/Create-a-Scaffold)
+  * [Creates a Model](https://github.com/biggora/trinte/wiki/Create-a-Model)
+  * [Creates a Controller](https://github.com/biggora/trinte/wiki/Create-a-controller)
+  * [Creates a View](https://github.com/biggora/trinte/wiki/Create-a-View)
+  * [Creates a Rest](https://github.com/biggora/trinte/wiki/Create-a-Rest)
+  * [Field types](https://github.com/biggora/trinte/wiki/Create-a-Model#field-types)
+  * [Runs server](https://github.com/biggora/trinte/wiki/Runs-Server)
+* [Created application](https://github.com/biggora/trinte/wiki/Application-configuration)
+  * [Application configuration](https://github.com/biggora/trinte/wiki/Application-configuration)
+  * [Database configuration](https://github.com/biggora/trinte/wiki/Application-configuration#database-configuration)
+  * [Directory structure](https://github.com/biggora/trinte/wiki/Directory-Structure)
+  * [Routing](https://github.com/biggora/trinte/wiki/Routes)
+  * [Param pre-condition functions](https://github.com/biggora/trinte/wiki/Routes#wiki-param-pre-condition-functions)
+  * [Middleware](https://github.com/biggora/trinte/wiki/Middleware)
+  * [Application Helper](https://github.com/biggora/trinte/wiki/Helpers)
+  * [Views Helper](https://github.com/biggora/trinte/wiki/Helpers#views-helper)
+  * [Models Helper](https://github.com/biggora/trinte/wiki/Helpers#models-helper)
+* [Examples](https://github.com/biggora/trinte/wiki/Examples)
+  * [Database configuration](https://github.com/biggora/trinte/wiki/Examples#database-configuration)
+  * [Authentication](https://github.com/biggora/trinte/wiki/Examples#authentication)
+  * [Session](https://github.com/biggora/trinte/wiki/Examples#session)
+  * [Multilingual support](https://github.com/biggora/trinte/wiki/Multilingual-support)
 
 ### Copyright & License
 
