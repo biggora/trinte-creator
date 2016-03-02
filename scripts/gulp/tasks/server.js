@@ -20,7 +20,7 @@ gulp.task('server', function() {
     server.start();
 
     /* restart */
-    gulp.watch(gulpConfig.jslint, function() {
+    gulp.watch([gulpConfig.jslint, gulpConfig.yaml], function() {
         server.start.bind(server)()
     });
     /* lint js */

@@ -17,10 +17,8 @@ process.env.CLUSTER = true;
  * @param {Number} port
  */
 exports.boot = function () {
-    if (config.debug) {
-        console.log('App Launching in cluster mode on port: ' + process.env.PORT);
-        console.log('Workers count: ' + numCPUs);
-    }
+    console.log('App Launching in cluster mode on port: ' + process.env.PORT);
+    console.log('Workers count: ' + numCPUs);
 
     //Create our express instance
     app = single.boot(process.env.CLUSTER);

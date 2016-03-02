@@ -15,9 +15,7 @@ exports.trinte = trinte;
 exports.boot = function (cluster) {
     app = module.exports = trinte.createServer();
     if (!cluster) {
-        if(config.debug) {
-            console.log('App Launching in single instance mode on port: ' + process.env.PORT);
-        }
+        console.log('App Launching in single instance mode on port: ' + process.env.PORT);
     }
     return app;
 };

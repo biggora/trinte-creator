@@ -14,5 +14,6 @@ module.exports = {
         jsSrc: prefix + '/js/**',
         jsDest: prefix + '/js'
     },
+    yaml: './config/locales/**/*.yml',
     jslint: ['./*.js', './bin/*.js', './config/**/*.js', './app/**/*.js']
 };

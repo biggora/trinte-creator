@@ -20,6 +20,10 @@ after install framework:
 
       # generate scaffold
       $ trinte -g crud User active:bool name email password about:text created:date
+      
+      # start test
+      $ npm test
+      
 
   - Browse your application to [http://localhost:3000](http://localhost:3000)
 

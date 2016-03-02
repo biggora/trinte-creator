@@ -7,7 +7,7 @@
  **/
 
 module.exports = {
-    debug: true,
+    debug: false,
     autoupdate: true,
     language: 'en',
     port: 3000,
