@@ -14,7 +14,7 @@ var config = require('./configuration');
  * @param {Object} app
  * @param {Object} express
  **/
-module.exports = function (app, express) {
+module.exports = function (app) {
    app.use(expressSession({
       cookie: {
          maxAge: config.session.maxAge

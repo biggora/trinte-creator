@@ -22,7 +22,7 @@ module.exports = {
      * @param res
      * @param next
      */
-    'index': function(req, res, next) {
+    'index': function(req, res) {
 
         /**
          * If you want to redirect to another controller, uncomment
@@ -31,22 +31,19 @@ module.exports = {
         var controllers = [];
 
         fs.readdir(__dirname + '/', function(err, files) {
-
             if (err) {
                 throw err;
             }
             files.forEach(function(file) {
                 if(/\.js$/i.test(file)) {
-                   if (file !== "AppsController.js") {
+                   if (file !== 'AppsController.js') {
                        controllers.push(file.replace('Controller.js', '').toLowerCase());
                    }
                 }
             });
-
             res.render('app', {
                 controllers: controllers
             });
-
         });
     },
     /**
@@ -55,7 +52,7 @@ module.exports = {
      * @param res
      * @param next
      */
-    'login': function(req, res, next) {
+    'login': function(req, res) {
             res.render('login', {
                 controllers: []
             });

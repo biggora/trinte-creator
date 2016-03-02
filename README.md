@@ -5,8 +5,13 @@ Script creator for [TrinteJS](https://github.com/biggora/trinte) Javascript MVC 
 TrinteJS is a MVC boilerplate for ExpressJS backed by [CaminteJS ORM](https://github.com/biggora/caminte) and Bootstrap.
 
 ### Installation
+First install required dependencies:
 
-    npm install trinte -g
+      $ sudo npm install bower mocha gulp npm -g
+
+after install framework:
+
+      $ npm install trinte -g
     
 ### Get started!
 

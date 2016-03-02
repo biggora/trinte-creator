@@ -5,15 +5,17 @@
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
  **/
+var crypto = require('crypto');
+var fs = require('fs');
 
 module.exports = {
     getRandomInt: function (min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     },
     uid: function (len) {
-        var buf = []
-            , chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-            , charlen = chars.length;
+        var buf = [],
+            chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+            charlen = chars.length;
 
         for (var i = 0; i < len; ++i) {
             buf.push(chars[this.getRandomInt(0, charlen - 1)]);
@@ -34,7 +36,7 @@ module.exports = {
         var hash = crypto.createHash(algorithm);
         hash.update(pass.toString() + salt);
         var nPass = hash.digest('hex').toString();
-        return  pass && pass !== '' ? nPass : '';
+        return pass && pass !== '' ? nPass : '';
     },
     normalizeDate: function (date) {
         if (typeof date === 'number') {
@@ -76,24 +78,21 @@ module.exports = {
             case 'number':
                 nVal = parseInt(val);
                 return isNaN(nVal) ? null : nVal;
-                break;
             case 'double':
             case 'float':
                 nVal = parseFloat(val);
-                return typeof nVal !== number ? null : nVal;
-                break;
+                return typeof nVal !== Number ? null : nVal;
             case 'date':
                 nVal = Date.parse(val) > 0 ? new Date().setTime(Date.parse(val)) : {};
                 nVal = (typeof nVal !== 'number' && parseInt(val) > 0) ? new Date().setTime(parseInt(val)) : nVal;
                 return nVal.getTime || !isNaN(parseInt(nVal)) ? nVal : null;
-                break;
             default:
                 return val;
         }
     },
-    validateFields: function (ins, query, options, callback) {
-        var filtered = {}, err, model, self = this, errors = [];
-        model = new ins();
+    validateFields: function (Ins, query, options, callback) {
+        var filtered = {}, model, self = this, errors = [];
+        model = new Ins();
         model = typeof model === 'object' && model.toJSON ? model.toJSON() : model;
         query = typeof query === 'object' ? query : {};
         if (typeof options === 'function') {
@@ -102,15 +101,20 @@ module.exports = {
         }
 
         options = typeof options === 'object' ? options : {};
+        var setForDB = function (prop) {
+            'use strict';
+            return function (kVal) {
+                return self.forDB(kVal, Ins.whatTypeName(prop));
+            };
+        };
+
         for (var prop in query) {
             if (Object.prototype.hasOwnProperty.call(model, prop)) {
                 var sVal;
                 if (Object.prototype.toString.call(query[prop]) === '[object Array]') {
-                    sVal = query[prop].map(function(kVal){
-                        return self.forDB(kVal, ins.whatTypeName(prop));
-                    });
+                    sVal = query[prop].map(setForDB(prop));
                 } else {
-                    sVal = self.forDB(query[prop], ins.whatTypeName(prop));
+                    sVal = self.forDB(query[prop], Ins.whatTypeName(prop));
                 }
 
                 if (options.ignored) {
@@ -153,37 +157,38 @@ module.exports = {
 
         errors = errors.length && options.validate === true ? errors : [];
         if (options.validate === true) {
-            var newModel = new ins(filtered);
+            var newModel = new Ins(filtered);
             newModel.isValid(function (valid) {
                 if (!valid) {
                     Object.keys(newModel.errors).forEach(function (key) {
                         errors.push(' `' + key + '` ' + newModel.errors[key].join(', '));
                     });
                 }
-                callback && callback(errors, filtered);
+                return callback && callback(errors, filtered);
             });
         } else {
-            callback && callback(errors, filtered);
+            return callback && callback(errors, filtered);
         }
     },
-    queryToDb: function (ins, query) {
+    queryToDb: function (Ins, query) {
         var self = this;
         var dbQuery = {};
-        var model = new ins();
+        var model = new Ins();
         model = typeof model === 'object' && model.toJSON ? model.toJSON() : model;
         query = typeof query === 'object' ? query : {};
+        var setForDB = function (type) {
+            'use strict';
+            return function (val) {
+                return self.forDB(val, type);
+            };
+        };
         for (var prop in query) {
-            var sType = ins.whatTypeName(prop) || 'String';
+            var sType = Ins.whatTypeName(prop) || 'String';
             if (typeof query[prop] === 'object') {
                 if (Object.prototype.toString.call(query[prop]) === '[object Array]') {
                     dbQuery[prop] = {
-                        'inq': query[prop].map(function (val) {
-                            return self.forDB(val, sType);
-                        })
-                    }
-                }
-                if(query[prop] instanceof RegExp) {
-                    dbQuery[prop] = query[prop];
+                        'inq': query[prop].map(setForDB(sType))
+                    };
                 }
             } else {
                 if (Object.prototype.hasOwnProperty.call(model, prop)) {
@@ -195,6 +200,49 @@ module.exports = {
                 }
             }
         }
-        return dbQuery
+        return dbQuery;
+    },
+    removeFiles: function (item) {
+        var mainsrc = item.source_path || item.image_source;
+        var thumbs = item.source_thumbs || item.image_thumbs;
+
+        if (typeof thumbs === 'string') {
+            try {
+                thumbs = JSON.parse(thumbs);
+            } catch (err) {
+            }
+        }
+
+        if (thumbs instanceof Array) {
+            thumbs.forEach(function (thumb) {
+                try {
+                    var stats = fs.statSync(__dirname + '/../../public' + thumb);
+                    if (stats.isFile()) {
+                        fs.unlinkSync(__dirname + '/../../public' + thumb);
+                    }
+                } catch (err) {
+                }
+            });
+        }
+        if (mainsrc && typeof mainsrc !== 'undefined' && mainsrc !== '') {
+            try {
+                var stats = fs.statSync(__dirname + '/../../public' + mainsrc);
+                if (stats.isFile()) {
+                    fs.unlinkSync(__dirname + '/../../public' + mainsrc);
+                }
+            } catch (err) {
+
+            }
+        }
+    },
+    parseJsonFields: function (item) {
+        if (typeof item.image_thumbs === 'string') {
+            try {
+                item.image_thumbs = JSON.parse(item.image_thumbs);
+            } catch (err) {
+
+            }
+        }
+        return item;
     }
 };

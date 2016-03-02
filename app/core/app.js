@@ -2,21 +2,27 @@
  * Module dependencies.
  */
 var config = require('./config/configuration'), app;
+var trinte = require('./bin/trinte');
 
+process.env.PORT = process.env.PORT || config.port || 3000;
+process.env.HOST = process.env.HOST || config.host || '127.0.0.1';
+
+exports.trinte = trinte;
 
 /**
  * Initial bootstrapping
  */
-exports.boot = function (port, cluster) {
-    process.env.PORT = port || config.port || 3000;
-    app = module.exports = require('./bin/trinte').createServer();
+exports.boot = function (cluster) {
+    app = module.exports = trinte.createServer();
     if (!cluster) {
-        if(config.debug) console.log('App Launching in single instance mode on port: ' + process.env.PORT);
+        if(config.debug) {
+            console.log('App Launching in single instance mode on port: ' + process.env.PORT);
+        }
     }
     return app;
 };
 
 // allow normal node loading if appropriate
 if (!module.parent) {
-    exports.boot(process.env.PORT).listen(process.env.PORT);
+    return exports.boot().listen(process.env.PORT, process.env.HOST);
 }

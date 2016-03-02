@@ -16,7 +16,7 @@ var database = require('./database' )[process.env.NODE_ENV || 'dev'];
  * @param {Object} app
  * @param {Object} express
  **/
-module.exports = function (app, express) {
+module.exports = function (app) {
     var SessionStore = caminteStore(expressSession);
     app.use(expressSession({
          cookie: {

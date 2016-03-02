@@ -40,6 +40,17 @@
         "assert": "latest",
         "supertest": "latest",
         "istanbul": "latest",
-        "jshint": "^2.8.0"
+        "jshint": "^2.8.0",
+        "gulp": "latest",
+        "require-dir": "latest",
+        "gulp-filter":"latest",
+        "gulp-rimraf":"latest",
+        "gulp-jshint":"latest",
+        "gulp-filesize":"latest",
+        "gulp-cssnano":"latest",
+        "gulp-sourcemaps":"latest",
+        "gulp-rename":"latest",
+        "gulp-uglify":"latest",
+        "gulp-live-server":"latest"
     }
 }

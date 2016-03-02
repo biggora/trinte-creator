@@ -6,6 +6,9 @@
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
  **/
+/*global
+mergeRecursive
+*/
 var Uploader = require('express-uploader');
 var defaultOptions = {
     debug: true,
@@ -19,18 +22,15 @@ var defaultOptions = {
     thumbSizes: [140, [100, 100]]
 };
 
-exports.createDir = function(dirName) {
-
-}
 
 /**
  * Define middleware
  * @param {Object} options
  **/
 exports.middleware = function middleware(options) {
-    return function(req, res, next) {
-        var cOptions = MergeRecursive({}, defaultOptions);
-            cOptions = MergeRecursive(cOptions, options);
+    return function(req, res) {
+        var cOptions = mergeRecursive({}, defaultOptions);
+            cOptions = mergeRecursive(cOptions, options);
         var uploader = new Uploader(cOptions);
         uploader.uploadFile(req, function(data) {
             res.send(data);

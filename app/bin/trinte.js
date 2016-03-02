@@ -243,6 +243,7 @@ exports.init = function init(app, root) {
 
     trinte.on('models_loaded', function () {
         configureApp(trinte, function () {
+            /* jshint unused: false */
             var ModelsHelper = require('../app/helpers/ModelsHelper');
             var ApplicationHelper = require('../app/helpers/ApplicationHelper');
             for (var key in ApplicationHelper) {

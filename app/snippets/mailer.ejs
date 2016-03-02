@@ -6,6 +6,9 @@
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
  **/
+/*global
+mergeRecursive
+*/
 var nodemailer = require('nodemailer');
 var mailConf = require('../mail')[process.env.NODE_ENV || 'dev'];
 
@@ -65,11 +68,11 @@ exports.sendMail = function sendMail(message, callback, transport) {
  * Define mailSender
  **/
 exports.mailSender = function mailSender() {
-    return function(req, res, next) {
+    return function(req, res) {
         var recMessage = req.body.message, message;
         if (recMessage) {
-            message = MergeRecursive({}, defaultMessage);
-            message = MergeRecursive(message, recMessage);
+            message = mergeRecursive({}, defaultMessage);
+            message = mergeRecursive(message, recMessage);
             // Create a transport object
             var locTransport = nodemailer.createTransport(mailConf.transport, mailConf.config);
             locTransport.sendMail(message, function(error) {

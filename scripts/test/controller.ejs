@@ -71,7 +71,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -83,7 +83,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     user = res.body;
                     done();
                 });
@@ -96,7 +96,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .expect(200)
                 .expect('Content-Type', /xml/)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -115,7 +115,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'text/html')
                 .expect(302)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -130,7 +130,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'application/json')
                 .expect(201)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     user = res.body;
                     done();
                 });
@@ -146,7 +146,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'text/xml')
                 .expect(201)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -160,7 +160,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'text/html')
                 .expect(200)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -171,7 +171,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'application/json')
                 .expect(200)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -182,7 +182,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'text/xml')
                 .expect(200)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -197,7 +197,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'text/html')
                 .expect(200)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -208,7 +208,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'application/json')
                 .expect(200)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -219,7 +219,7 @@ describe('Controller <?= controllerName ?>:', function () {
                 .set('Accept', 'text/xml')
                 .expect(200)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });
@@ -238,9 +238,12 @@ describe('Controller <?= controllerName ?>:', function () {
             server
                .delete('/<?= basePathPlural ?>/' + user.id)
                .set('Accept', 'application/json')
+               .send({
+                   _csrf: csrf
+                })
                .expect(200)
                .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                });
         });
@@ -253,9 +256,12 @@ describe('Controller <?= controllerName ?>:', function () {
             server
                 .delete('/<?= basePathPlural ?>')
                 .set('Accept', 'application/json')
+                .send({
+                   _csrf: csrf
+                 })
                 .expect(200)
                 .end(function (err, res) {
-                    if (err) return done(err);
+                    if (err) { return done(err); }
                     done();
                 });
         });

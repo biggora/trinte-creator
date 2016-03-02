@@ -15,7 +15,7 @@ var auth = require('./authorization/local');
  * @param {Object} app
  * @param {Object} express
  **/
-module.exports = function middleware(app, express) {
+module.exports = function middleware(app) {
     app.use(auth.initialize());
     app.use(csrf());
     app.use(useragent.express());

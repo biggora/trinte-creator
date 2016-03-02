@@ -11,7 +11,7 @@
  * Define addProductToCart
  **/
 exports.addProductToCart = function addProductToCart() {
-    return function(req, res, next) {
+    return function(req, res) {
         var newProduct = req.body.product;
         if (newProduct) {
             if (req.session) {
@@ -55,7 +55,7 @@ exports.addProductToCart = function addProductToCart() {
  * Define getProductFromCart
  **/
 exports.getProductFromCart = function getProductFromCart() {
-    return function(req, res, next) {
+    return function(req, res) {
         if (!req.session) {
             req.session = {};
         }

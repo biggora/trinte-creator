@@ -7,9 +7,11 @@
  **/
 
 module.exports = {
-    debug: false,
+    debug: true,
+    autoupdate: true,
     language: 'en',
     port: 3000,
+    host: '0.0.0.0',
     session: {
         maxAge: 8640000,
         key: 'trinte',

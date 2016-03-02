@@ -8,11 +8,12 @@
  *
  *  docs: https://github.com/biggora/trinte/wiki/Create-app#create-application-with-authorization
  **/
- 
+
 var auth = require( 'trinte-auth' );
-var config = require( '../configuration' );
+// var config = require( '../configuration' );
 var passport = require( 'passport' );
-var LocalStrategy = require( 'passport-local' ).Strategy;
+var passportLocal = require( 'passport-local' );
+var LocalStrategy = passportLocal.Strategy;
     
 /**
  * LocalStrategy
@@ -42,6 +43,7 @@ passport.serializeUser( function(user, done) {
  * @param {Function} done
  */
 passport.deserializeUser( function(id, done) {
+        var user = {}, err = null;
         // your code here
         done( err, user );
 } );
@@ -64,7 +66,7 @@ auth.localAuth = function localAuth(failurePath, successPath) {
  * isAdmin
  * @param {String} path
  */
-auth.isAdmin = function isAdmin(path) {
+auth.isAdmin = function isAdmin() {
     return  function(req, res, next){
     // your code here
           next();

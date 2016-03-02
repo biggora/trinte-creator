@@ -388,7 +388,6 @@ Resource.prototype.resources = function (name, params, actions) {
     // etc.
     var prefix = params.path ? params.path : name;
 
-
     // calculate set of routes based on params.only and params.except
     function getActiveRoutes(params) {
         var activeRoutes = {},
@@ -459,7 +458,7 @@ Resource.prototype.resources = function (name, params, actions) {
             self.subroutes(prefix, actions); // singletons don't need to specify an id
         } else {
             var sname = name.singularize() || name;
-            self.subroutes(prefix + '/:' + sname.foreignKey(), actions);
+            self.subroutes(prefix + '/:' + sname + '_id', actions);
         }
     }
 
@@ -494,6 +493,29 @@ Resource.prototype.resources = function (name, params, actions) {
         var effectivePath = (params.path || name) + path;
         var controller = params.controller || name;
 
+        function getParams(action, params) {
+            var p = {};
+            var plural = true;// action === 'index' || action === 'create';
+            if (params.as) {
+                p.as = plural ? params.as : params.as.singularize();
+                p.as = self.urlHelperName(self.globPath + p.as);
+                if (action === 'new' || action === 'edit') {
+                    p.as = action + '_' + p.as;
+                }
+            }
+
+            if (params.path && !p.as) {
+                var aname = plural ? name : name.singularize();
+                aname = self.urlHelperName(self.globPath + aname);
+                p.as = action === 'new' || action === 'edit' ? action + '_' + aname : aname;
+            }
+            if ('state' in params) {
+                p.state = params.state;
+            }
+
+            return p;
+        }
+
         // and call map.{get|post|update|delete}
         // with the path, controller, middleware and options
         self[method.toLowerCase()].call(
@@ -503,29 +525,6 @@ Resource.prototype.resources = function (name, params, actions) {
             skipMiddleware ? [] : params.middleware,
             getParams(action, params)
         );
-    }
-
-    function getParams(action, params) {
-        var p = {};
-        var plural = true;// action === 'index' || action === 'create';
-        if (params.as) {
-            p.as = plural ? params.as : params.as.singularize();
-            p.as = self.urlHelperName(self.globPath + p.as);
-            if (action === 'new' || action === 'edit') {
-                p.as = action + '_' + p.as;
-            }
-        }
-
-        if (params.path && !p.as) {
-            var aname = plural ? name : name.singularize();
-            aname = self.urlHelperName(self.globPath + aname);
-            p.as = action === 'new' || action === 'edit' ? action + '_' + aname : aname;
-        }
-        if ('state' in params) {
-            p.state = params.state;
-        }
-
-        return p;
     }
 
     // now let's walk through action routes
