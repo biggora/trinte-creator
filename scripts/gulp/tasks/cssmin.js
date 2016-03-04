@@ -10,8 +10,8 @@ var sourcemaps = require('gulp-sourcemaps');
 var rename = require('gulp-rename');
 var gulpFilter = require('gulp-filter');
 
-gulp.task('minify-css', function () {
-    var filter = gulpFilter(['*.css', '!*.min.css']);
+gulp.task('minify-css', ['clean-css'], function () {
+    var filter = gulpFilter(['**/*.css', '**/!*.min.css']);
     return gulp.src(config_site.cssSrc)
         .pipe(filter)
         .pipe(sourcemaps.init({loadMaps: true}))

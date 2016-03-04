@@ -6,33 +6,41 @@ if (!process.env.NODE_ENV) {
     process.env.NODE_ENV = 'development';
 }
 
+var options = {};
 var gulp = require('gulp');
 var gls = require('gulp-live-server');
 var gulpConfig = require('../config');
 
 gulp.task('server', function() {
 
-    var server = gls.new('app.js', {
-        env: {
-            NODE_ENV: process.env.NODE_ENV
-        }
-    });
+    options.env = process.env;
+    options.port = 35729;
+
+    var server = gls.new('app.js', options);
+
     server.start();
 
-    /* restart */
+    /* app restart */
     gulp.watch([gulpConfig.jslint, gulpConfig.yaml], function() {
-        server.start.bind(server)()
+        server.start.bind(server)();
+    });
+    /* only reload */
+    gulp.watch(gulpConfig.views, function (evt) {
+        server.notify.apply(server, [evt]);
     });
     /* lint js */
-    gulp.watch(gulpConfig.jslint, ['lint'], function (file) {
-        server.notify.apply(server, [file]);
+    gulp.watch(gulpConfig.jslint, function() {
+        gulp.start('lint');
+        server.start.bind(server)();
     });
     /* minify css */
-    gulp.watch(gulpConfig.site.cssSrc, ['clean-css','minify-css'], function (file) {
-        server.notify.apply(server, [file]);
+    gulp.watch(gulpConfig.site.cssSrc, function (evt) {
+        gulp.start('clean-css','minify-css');
+        server.notify.apply(server, [evt]);
     });
     /* uglify js */
-    gulp.watch(gulpConfig.site.jsSrc, ['clean-js','uglify-js'], function (file) {
-        server.notify.apply(server, [file]);
+    gulp.watch(gulpConfig.site.jsSrc, function (evt) {
+        gulp.start('clean-js','uglify-js');
+        server.notify.apply(server, [evt]);
     });
 });

@@ -9,11 +9,12 @@ module.exports = {
         dest: prefix + "/img"
     },
     site: {
-        cssSrc: prefix + '/css/*.css',
+        cssSrc: prefix + '/css/**',
         cssDest: prefix + '/css',
         jsSrc: prefix + '/js/**',
         jsDest: prefix + '/js'
     },
+    views: './app/views/**/*.ejs',
     yaml: './config/locales/**/*.yml',
     jslint: ['./*.js', './bin/*.js', './config/**/*.js', './app/**/*.js']
 };

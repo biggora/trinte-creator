@@ -19,4 +19,10 @@ module.exports = function middleware(app) {
     app.use(auth.initialize());
     app.use(csrf());
     app.use(useragent.express());
+    if (/^dev/i.test(process.env.NODE_ENV)) {
+        var liveroad = require('connect-livereload');
+        app.use(liveroad({
+            port: 35729
+        }));
+    }
 };

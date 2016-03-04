@@ -3,6 +3,4 @@
  */
 var gulp = require('gulp');
 
-gulp.task('default', ['lint','minify-css','uglify-js'], function() {
-    return true;
-});
+gulp.task('default', ['minify-css', 'uglify-js']);

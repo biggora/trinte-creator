@@ -10,7 +10,7 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var gulpFilter = require('gulp-filter');
 
-gulp.task('uglify-js', function () {
+gulp.task('uglify-js', ['clean-js'], function () {
     var filter = gulpFilter(['**/*.js', '**/!*.min.js']);
     return gulp.src(config_site.jsSrc)
         .pipe(filter)
