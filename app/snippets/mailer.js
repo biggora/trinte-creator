@@ -1,21 +1,22 @@
 /**
  *  Mail manager
- *  
+ *
  *
  *  Created by trinte-creator script
  *  App based on TrinteJS MVC framework
  *  TrinteJS homepage http://www.trintejs.com
  **/
 /*global
-mergeRecursive
-*/
+ mergeRecursive
+ */
 var nodemailer = require('nodemailer');
-var mailConf = require('../mail')[process.env.NODE_ENV || 'dev'];
+var mc = require('../mail');
+var mailConf = mc[process.env.NODE_ENV || 'dev'];
 
 // Message object
 var defaultMessage = {
     // sender info
-    from: 'Sender Name <sender@example.com>',
+    from: mailConf.senderName + ' <' + mailConf.senderMail + '>',
     // Comma separated list of recipients
     to: '"Receiver Name" <nodemailer@example.com>',
     // Subject of the message
@@ -33,34 +34,31 @@ var defaultMessage = {
 
 /**
  * Define createTransport
- * @param {Object} transport
  * @param {Object} mailConfig
  **/
-exports.createTransport = function createTransport(transport, mailConfig) {
-    transport = transport ? transport : mailConf.transport;
+exports.createTransport = function createTransport(mailConfig) {
     mailConfig = mailConfig ? mailConfig : mailConf.config;
-    // Create a transport object
-    return nodemailer.createTransport(transport, mailConfig);
+    return nodemailer.createTransport(mailConfig);
 };
 
 /**
  * Define sendMail
  * @param {Object} message
  * @param {Function} callback
- * @param {Object} transport
+ * @param {Bool} close
  **/
-exports.sendMail = function sendMail(message, callback, transport) {
-    var close = transport ? false : true;
-    transport = transport ? transport : exports.createTransport();
-    transport.sendMail(message, function(error) {
+exports.sendMail = function sendMail(message, callback, close) {
+    var close = close ? false : true;
+    var transport = exports.createTransport();
+    transport.sendMail(message, function (error, info) {
         if (error) {
             console.log(error.message);
-            return callback && callback(error.message);
+            return callback && callback(error.message, info);
         }
         if (close) {
             transport.close();
         }
-        return callback && callback(null);
+        return callback && callback(null, info);
     });
 };
 
@@ -68,14 +66,14 @@ exports.sendMail = function sendMail(message, callback, transport) {
  * Define mailSender
  **/
 exports.mailSender = function mailSender() {
-    return function(req, res) {
+    return function (req, res) {
         var recMessage = req.body.message, message;
         if (recMessage) {
             message = mergeRecursive({}, defaultMessage);
             message = mergeRecursive(message, recMessage);
             // Create a transport object
-            var locTransport = nodemailer.createTransport(mailConf.transport, mailConf.config);
-            locTransport.sendMail(message, function(error) {
+            var locTransport = nodemailer.createTransport(mailConf.config);
+            locTransport.sendMail(message, function (error) {
                 if (error) {
                     console.log('Error occured');
                     console.log(error.message);
