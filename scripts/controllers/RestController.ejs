@@ -21,8 +21,10 @@
   var addView = namespace && namespace !== "" ? namespace + "/" : "" ;
   var nsPath = namespace && namespace !== "" ? namespace + "_" : "" ;
 ?>
+/*global
+ <?= modelName ?>
+*/
 var Tools = require('<?= addIncl ?>../lib/tools.js');
-var ViewTemplatePath = '<?= addView ?><?= basePathPlural ?>';
 
 module.exports = {
 
@@ -37,11 +39,10 @@ module.exports = {
      * @param {Function} next
      **/
     'index': function(req, res, next) {
-        var title = "<?= controllerName ?>";
+        var title = '<?= controllerName ?>';
         var format = req.params.format || '';
         var sort = req.query.sort || req.body.sort;
         var search = req.query.search || req.body.search;
-        var fields = req.query.fields || req.body.fields;
         var query = req.method === 'POST'? req.body : req.query;
         var from = req.params.from ? parseInt(req.params.from) - 1 : 0;
         var to = req.params.to ? parseInt(req.params.to) : 20;
@@ -59,12 +60,12 @@ module.exports = {
                 direction = 'DESC';
                 sort = sort.substr(1,sort.length);
             }
-            opts.order = sort + " " + direction;
+            opts.order = sort + ' ' + direction;
         }
         <? fields.forEach(function(field){ ?>
         <? if(field.param_val == 'name' || field.param_val == 'title'){ ?>
-        if(search && search != "") {
-            search = search.toString().replace(/^\s|\s$/,"");
+        if(search && search !== '') {
+            search = search.toString().replace(/^\s|\s$/,'');
             opts.where.<?= field.param_val ?> = {
                     regex : search
             };
@@ -119,8 +120,8 @@ module.exports = {
      * @param {Function} next
      **/
     'new': function(req, res, next) {
-        var title = "New <?= modelName ?>";
         var <?= modelVariable ?> = new <?= modelName ?>(req.query);
+        var format = req.params.format || '';
         switch (format.toString()) {
              case 'xml':
                  res.xml(201, { root : { item : <?= modelVariable ?>.toObject() } });
@@ -174,7 +175,6 @@ module.exports = {
      * @param {Function} next
      **/
     'show': function(req, res, next) {
-        var title = "Show <?= modelName ?>";
         var format = req.params.format || '';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
               if(err) {
@@ -249,8 +249,7 @@ module.exports = {
              if (!<?= modelVariable ?>) {
                    res.message(format, 'error', 'Unable to locate the <?= modelVariable ?> to delete!', 'not_found', 404);
                    return false;
-             };
-
+             }
              <?= modelVariable ?>.destroy(function(err) {
                    if(err) {
                       res.message(format, 'error', 'There was an error deleting the <?= modelVariable ?>!', 'not_deleting', 500);
