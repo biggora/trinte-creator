@@ -110,7 +110,33 @@ module.exports = {
             });
         });
     },
-
+     /**
+     * Edit action, returns a form via <?= addView ?>views/<?= basePathPlural ?>/edit.ejs view no JSON view.
+     * Default mapping to GET '<?= namespace ?>/<?= basePath ?>/:id/edit'
+     * View Helper method pathTo.edit_<?= nsPath ?><?= modelVariable ?>(instance)
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     **/
+    'edit': function(req, res) {
+        var format = req.params.format || '';
+        <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
+              if(err) {
+                   return next(err);
+              }
+              if(<?= modelVariable ?>) {
+                   switch (format.toString()) {
+                           case 'xml':
+                               res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
+                               break;
+                           default:
+                               res.json(200, { item : <?= modelVariable ?>.toObject() });
+                   }
+              } else {
+                   res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
+              }
+        });
+    },
     /**
      * New action, returns the new object as json.
      * Default mapping to GET '<?= namespace ?>/<?= basePath ?>/new'
@@ -119,7 +145,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'new': function(req, res, next) {
+    'new': function(req, res) {
         var <?= modelVariable ?> = new <?= modelName ?>(req.query);
         var format = req.params.format || '';
         switch (format.toString()) {
@@ -139,7 +165,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'create': function(req, res, next){
+    'create': function(req, res){
         var format = req.params.format || '';
         Tools.validateFields(<?= modelName ?>, req.body, {
              validate: true
@@ -202,7 +228,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'update': function(req, res, next) {
+    'update': function(req, res) {
         var format = req.params.format || '';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
             if(<?= modelVariable ?>) {
@@ -243,7 +269,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'destroy': function(req, res, next){
+    'destroy': function(req, res){
         var format = req.params.format || '';
         <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
              if (!<?= modelVariable ?>) {
@@ -268,7 +294,7 @@ module.exports = {
      * @param {Object} res
      * @param {Function} next
      **/
-    'destroyall': function(req, res, next){
+    'destroyall': function(req, res){
         var format = req.params.format || '';
         <?= modelName ?>.destroyAll(function(err) {
              if(err) {
