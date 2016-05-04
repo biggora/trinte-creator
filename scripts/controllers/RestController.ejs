@@ -119,23 +119,7 @@ module.exports = {
      * @param {Function} next
      **/
     'edit': function(req, res) {
-        var format = req.params.format || '';
-        <?= modelName ?>.findById(req.params.id, function(err, <?= modelVariable ?>) {
-              if(err) {
-                   return next(err);
-              }
-              if(<?= modelVariable ?>) {
-                   switch (format.toString()) {
-                           case 'xml':
-                               res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
-                               break;
-                           default:
-                               res.json(200, { item : <?= modelVariable ?>.toObject() });
-                   }
-              } else {
-                   res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
-              }
-        });
+        res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>({id:req.params.id));
     },
     /**
      * New action, returns the new object as json.
@@ -150,10 +134,10 @@ module.exports = {
         var format = req.params.format || '';
         switch (format.toString()) {
              case 'xml':
-                 res.xml(201, { root : { item : <?= modelVariable ?>.toObject() } });
+                 res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
                  break;
              default:
-                 res.json(201, { item : <?= modelVariable ?>.toObject() });
+                 res.status(200).json({ item : <?= modelVariable ?>.toObject() });
         }
     },
 
@@ -185,7 +169,7 @@ module.exports = {
                           res.xml(201, { root : { item : <?= modelVariable ?>.toObject() } });
                           break;
                       default:
-                          res.json(201, { item : <?= modelVariable ?>.toObject() });
+                          res.status(201).json({ item : <?= modelVariable ?>.toObject() });
                  }
              });
         });
@@ -212,7 +196,7 @@ module.exports = {
                                res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
                                break;
                            default:
-                               res.json(200, { item : <?= modelVariable ?>.toObject() });
+                               res.status(200).json({ item : <?= modelVariable ?>.toObject() });
                    }
               } else {
                    res.message(format, 'error', '<?= modelVariable ?>  Not Found.', 'not_found', 404);
@@ -251,7 +235,7 @@ module.exports = {
                                 res.xml(200, { root : { item : <?= modelVariable ?>.toObject() } });
                               break;
                            default:
-                                res.json(200, { item : <?= modelVariable ?>.toObject() });
+                              res.status(200).json({ item : <?= modelVariable ?>.toObject() });
                        }
                    });
                });

@@ -189,6 +189,8 @@ module.exports = {
                     dbQuery[prop] = {
                         'inq': query[prop].map(setForDB(sType))
                     };
+                } else {
+                    dbQuery[prop] = query[prop];
                 }
             } else {
                 if (Object.prototype.hasOwnProperty.call(model, prop)) {
