@@ -119,7 +119,7 @@ module.exports = {
      * @param {Function} next
      **/
     'edit': function(req, res) {
-        res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>({id:req.params.id));
+        res.redirect(pathTo.show_<?= nsPath ?><?= modelVariable ?>({id:req.params.id}));
     },
     /**
      * New action, returns the new object as json.
